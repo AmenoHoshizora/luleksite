@@ -14,7 +14,7 @@
 
     body {
       font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #b3e5fc, #ffc1e3); /* pastel blue → pastel pink */
+      background: linear-gradient(135deg, #b3e5fc, #ffc1e3);
       color: #fefefe;
       line-height: 1.6;
       padding: 20px;
@@ -39,13 +39,12 @@
       margin: 0 auto;
       transition: transform 0.3s ease, filter 0.3s ease;
 
-      /* subtle shadow behind the logo */
       filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))
               drop-shadow(0 0 30px rgba(246, 149, 247, 0.8));
     }
 
     header img:hover {
-      transform: scale(1.05) rotate(1deg);  /* slight pop effect */
+      transform: scale(1.05) rotate(1deg);
       filter: drop-shadow(0 0 25px rgba(246, 149, 247, 1))
               drop-shadow(0 0 50px rgba(255, 255, 255, 0.8));
     }
@@ -93,7 +92,6 @@
       margin: 20px 0;
     }
 
-    /* Circle buttons */
     .social-btn {
       --size: 96px;
       width: var(--size);
@@ -109,27 +107,25 @@
     }
 
     .social-btn.discord {
-      background: rgba(114,137,218, 1); /* lighter Discord purple */
+      background: rgba(114,137,218, 1);
     }
 
     .social-btn.tiktok {
-      background: rgba(0, 0, 0, 1); /* TikTok base (light gray/black) */
+      background: rgba(0, 0, 0, 1);
     }
 
     .social-btn.twitch {
-      background: rgba(145, 70, 255, 1); /* lighter Twitch purple */
+      background: rgba(145, 70, 255, 1);
     }
 
     .social-btn.youtube {
       background: rgba(231, 22, 22, 1);
     }
 
-    /* Scales well across screen sizes */
     @media (max-width: 480px) {
       .social-btn { --size: 84px; }
     }
 
-    /* Logo sizing & centering */
     .social-btn img {
       width: 60%;
       height: 60%;
@@ -137,21 +133,18 @@
       object-fit: contain;
     }
 
-    /* Subtle lift on hover (no glow yet) */
     .social-btn:hover { transform: translateY(-2px); }
 
-    /* Brand-color outline glow ONLY on hover */
     .social-btn::after {
       content: "";
       position: absolute;
-      inset: -4px;                  /* ring thickness */
+      inset: -4px;                
       border-radius: 50%;
       opacity: 0;
       transition: opacity .2s ease, box-shadow .2s ease;
       pointer-events: none;
     }
 
-    /* Single-color brands */
     .social-btn.discord:hover::after { 
       box-shadow: 0 0 0 3px rgba(88,101,242,.9), 0 0 22px rgba(88,101,242,.75);
       opacity: 1;
@@ -178,13 +171,13 @@
 
     .social-btn.tiktok:hover::before {
       box-shadow: 0 0 0 2px rgba(254,44,85,.95), 0 0 18px rgba(254,44,85,.75);
-      transform: translate(-2px, -2px); /* slight offset pink */
+      transform: translate(-2px, -2px);
       opacity: 1;
     }
 
     .social-btn.tiktok:hover::after {
       box-shadow: 0 0 0 2px rgba(37,244,238,.95), 0 0 18px rgba(37,244,238,.75);
-      transform: translate(2px, 2px); /* slight offset cyan */
+      transform: translate(2px, 2px);
       opacity: 1;
     }
 
@@ -231,7 +224,7 @@
 
     .social-text {
       margin-top: 8px;
-      font-family: 'Poppins', sans-serif; /* modern rounded font */
+      font-family: 'Poppins', sans-serif;
       font-size: 16px;
       font-weight: 500;
       color: #000000;
@@ -267,7 +260,7 @@
       position: fixed;
       bottom: 16px;
       right: 16px;
-      width: 90px;                 /* fixed size so it won't jump */
+      width: 90px;
       height: 42px;
       display: flex;
       align-items: center;
@@ -280,7 +273,7 @@
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 8px 22px rgba(0,0,0,0.35);
-      z-index: 1001;               /* above the panel */
+      z-index: 1001;
       transition: transform .15s ease, background .2s ease;
     }
     #toggle-handle:hover { background: #ff8fe0; transform: translateY(-1px); }
@@ -296,17 +289,16 @@
       z-index: 1000;
       transition: transform 0.35s ease-in-out;
       border-radius: 16px 0 0 0;
-      background: transparent; /* keep background transparent */
+      background: transparent;
       backdrop-filter: none;   
       overflow: hidden;
-      transform: translateX(100%); /* hidden by default */
-      box-shadow: none; /* remove glow */
-      animation: none;   /* remove animation */
+      transform: translateX(100%);
+      box-shadow: none;
+      animation: none;
     }
 
     .discord-sidebar.show {
       transform: translateX(0);
-      /* no box-shadow, no animation */
     }
 
     .discord-sidebar header {
@@ -314,7 +306,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 12px 16px;
-      background: #2c2f33; /* optional header background */
+      background: #2c2f33;
       border-radius: 16px 0 0 0;
     }
    
@@ -329,18 +321,15 @@
       flex-direction: column;
       padding: 12px;
 
-      /* hidden by default: slide out to the right */
       transform: translateX(110%);
       will-change: transform;
       transition: transform 0.35s ease-in-out;
     }
 
-    /* when .show is on the wrapper, slide panel in */
     .discord-sidebar.show .discord-members {
       transform: translateX(0);
     }
 
-    /* Pretty header */
     .discord-members h2 {
       margin: 0 0 10px 0;
       font-size: 1rem;
@@ -384,7 +373,6 @@
       transform: translateX(4px);
     }
 
-    /* Avatar circle glow */
     .avatar-wrapper {
       position: relative;
       flex-shrink: 0;
@@ -401,7 +389,6 @@
       transform: scale(1.1);
     }
 
-    /* Status dot */
     .status {
       position: absolute;
       bottom: 0;
@@ -412,7 +399,6 @@
       border-radius: 50%;
     }
 
-    /* Name style */
     .name {
       font-weight: 600;
       font-size: 0.95rem;
@@ -450,6 +436,15 @@
 
     @media (max-width: 480px) {
       header img { max-width: 70%; }
+      .about p{
+        font-size: 0.85rem;
+      }
+      .link-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, auto);
+        gap: 16px;
+        justify-items: center;
+      }
       .social-btn { --size: 64px; }
       .donation-buttons .social-btn {
         width: 80px;
@@ -459,7 +454,12 @@
         width: 50px;
         height: 50px;
       }
-      footer { font-size: 0.75rem; }
+      footer {
+        font-size: 0.55rem;
+      }
+      #toggle-handle {
+        bottom: 50px;
+      }
     }
   </style>
 </head>
@@ -569,7 +569,6 @@
         makeSection("Kitty's", data.subs);
         makeSection("Rizzlers", data.normal);
 
-        // ✅ Update total online count
         countSpan.textContent = `(${totalOnline})`;
 
       } catch (err) {
