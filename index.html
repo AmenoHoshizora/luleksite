@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+  <title>LuliyyKitty's Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+  </header>
+
+  <header>
+    <img src="luwek.png" height="400" width="400">
+  </header>
+
+  <div class="parallax-hero" id="about-hero">
+    <div class="parallax-bg"></div>
+    <div class="about-text" id="about-text">
+      <h2>Luliyy Kitty</h2>
+      <p>
+        .ೃ࿐ Hi haii~ Welcome to my website!~ ✨  
+        I’m <strong>Luliyy Kitty</strong>, a <em>magical girl deliverer</em> who can send love messages between life and death. 💫 ๋࣭⭑
+      </p>
+    </div>
+  </div>
+
+  <section class="links">
+    <h2>Find Me Here</h2>
+      <div class="link-buttons">
+        <a href="https://discord.gg/spCF9StKC5" target="_blank" class="social-btn discord" aria-label="Discord">
+          <img src="https://cdn.simpleicons.org/discord/FFFFFF" alt="Discord">
+        </a>
+
+        <a href="https://www.tiktok.com/@luliyykitty" target="_blank" class="social-btn tiktok" aria-label="TikTok">
+          <img src="https://cdn.simpleicons.org/tiktok/FFFFFF" alt="TikTok">
+        </a>
+
+        <a href="https://www.twitch.tv/luliyykittyy" target="_blank" class="social-btn twitch" aria-label="Twitch">
+          <img src="https://cdn.simpleicons.org/twitch/FFFFFF" alt="Twitch">
+        </a>
+
+        <a href="https://www.youtube.com/@luliiyyye" target="_blank" class="social-btn youtube" aria-label="YouTube">
+          <img src="https://cdn.simpleicons.org/youtube/FFFFFF" alt="YouTube">
+        </a>
+      </div>
+  </section>
+
+  <section class="donation-section">
+    <h2>Support Me</h2>
+    <div class="donation-buttons">
+      <div class="social-container">
+        <a href="https://sociabuzz.com/luliyy/tribe" target="_blank" class="social-btn sociabuzz">
+          <img src="sociabuzz.png" alt="Sociabuzz">
+        </a>
+        <span class="social-text">Sociabuzz</span>
+      </div>
+      <div class="social-container">
+        <a href="https://throne.com/luliyy" target="_blank" class="social-btn throne">
+          <img src="throne.png" alt="Throne">
+        </a>
+        <span class="social-text">Throne</span>
+      </div>
+    </div>
+  </section>
+
+  <button id="toggle-handle" aria-expanded="false">⮜ Online</button>
+
+  <div class="discord-sidebar">
+    <section class="discord-members">
+      <h2>
+        Discord Members Online 
+        <span id="online-count">(0)</span>
+      </h2>
+      <div id="online-members">Loading...</div>
+    </section>
+  </div>
+
+  <script>
+    async function loadOnlineMembers() {
+      try {
+        let res = await fetch("https://lulekbot.onrender.com/api/online_members"); 
+        let data = await res.json();
+        let container = document.getElementById("online-members");
+        let countSpan = document.getElementById("online-count");
+        container.innerHTML = "";
+
+        let totalOnline = 0;
+
+        function makeSection(title, members) {
+          let section = document.createElement("div");
+          section.className = "role-section";
+          section.innerHTML = `<h3>${title}</h3>`;
+          if (!members.length) {
+            section.innerHTML += "<p class='empty'>None online</p>";
+          } else {
+            members.forEach(m => {
+              totalOnline++;
+              section.innerHTML += `
+                <div class="member">
+                  <div class="avatar-wrapper">
+                    <img src="${m.avatar}" class="avatar">
+                    <span class="status ${m.status}"></span>
+                  </div>
+                  <span class="name">${m.name}</span>
+                </div>
+              `;
+            });
+          }
+          container.appendChild(section);
+        }
+
+        makeSection("Sigma", data.owner);
+        makeSection("Skibidis", data.mods);
+        makeSection("Mr Beast", data.donators);
+        makeSection("Yapper Degree", data.yapper);
+        makeSection("Streamer", data.streamer);
+        makeSection("Kitty's", data.subs);
+        makeSection("Rizzlers", data.normal);
+
+        countSpan.textContent = `(${totalOnline})`;
+
+      } catch (err) {
+        console.error("Error loading members:", err);
+        document.getElementById("online-members").innerText = "⚠️ Failed to load members.";
+      }
+    }
+
+    loadOnlineMembers();
+    setInterval(loadOnlineMembers, 30000);
+
+    const sidebar = document.querySelector(".discord-sidebar");
+    const toggle = document.getElementById("toggle-handle");
+    const membersPanel = document.querySelector(".discord-members");
+
+    toggle.addEventListener("click", () => {
+      sidebar.classList.toggle("show");
+
+      if (sidebar.classList.contains("show")) {
+        toggle.textContent = "⮞ Close ";
+        membersPanel.scrollTop = 0;
+      } else {
+        toggle.textContent = "⮜ Online";
+      }
+    })
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const hero = document.getElementById("about-hero");
+    const bg   = hero.querySelector(".parallax-bg");
+    const text = document.getElementById("about-text");
+
+    let vh = window.innerHeight || document.documentElement.clientHeight;
+
+    function onScroll(){
+      const rect = hero.getBoundingClientRect();
+
+      const inside = Math.min(Math.max(-rect.top, 0), rect.height);
+      bg.style.transform = `translateY(${inside * 0.4}px)`;
+
+      if (rect.top <= 0 && rect.bottom >= vh){
+        text.classList.add("pinned");
+      } else {
+        text.classList.remove("pinned");
+      }
+    }
+
+    function onResize(){
+      vh = window.innerHeight || document.documentElement.clientHeight;
+      onScroll();
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    onResize();
+  })
+
+  document.addEventListener("DOMContentLoaded", () => {
+            const navbar = document.querySelector(".navbar");
+
+            window.addEventListener("scroll", () => {
+                const scrollY = window.scrollY;
+
+                if (scrollY > 10) {
+                navbar.classList.add("transparent");
+                } else {
+                navbar.classList.remove("transparent");
+                }
+            });
+
+            const navLinks = document.querySelectorAll(".nav-links a");
+            navLinks.forEach(link => {
+                if (link.href === window.location.href) {
+                link.classList.add("active");
+                }
+            });
+
+            const hamburger = document.querySelector(".hamburger");
+            const navMenu = document.querySelector(".nav-links");
+            hamburger.addEventListener("click", () => {
+                navMenu.classList.toggle("show");
+            });
+        });
+  </script>
+
+  <footer>
+    <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
+  </footer>
+</body>
+</html>
