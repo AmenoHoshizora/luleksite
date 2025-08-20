@@ -71,10 +71,11 @@
       margin: 40px auto;
       max-width: 800px;
       padding: 20px;
-      background: rgba(255, 199, 253, 0.85);
+      background: rgba(255, 255, 255, 0.75);
       border-radius: 18px;
-      box-shadow: 0 4px 25px rgba(255, 182, 249, 0.25);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.3);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
@@ -201,7 +202,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f4f4f4; /* light background like your new style */
+      background: #f4f4f4;
       transition: 0.3s;
       overflow: hidden;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -440,7 +441,7 @@
         height: 50vh;
         right: 0;
         border-radius: 16px 16px 0 0;
-        transform: translateY(100%); /* slide up instead of side */
+        transform: translateY(100%);
       }
       .discord-sidebar.show { transform: translateY(0); }
       .discord-members { width: 100%; height: 100%; transform: translateY(100%); }
@@ -582,12 +583,17 @@
 
     const sidebar = document.querySelector(".discord-sidebar");
     const toggle = document.getElementById("toggle-handle");
+    const membersPanel = document.querySelector(".discord-members");
 
     toggle.addEventListener("click", () => {
       sidebar.classList.toggle("show");
-      toggle.textContent = sidebar.classList.contains("show")
-        ? "⮞ Close "
-        : "⮜ Online";
+
+      if (sidebar.classList.contains("show")) {
+        toggle.textContent = "⮞ Close ";
+        membersPanel.scrollTop = 0;
+      } else {
+        toggle.textContent = "⮜ Online";
+      }
     });
   </script>
 
