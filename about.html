@@ -23,6 +23,11 @@
         </nav>
     </header>
 
+    <div id="follower-box">
+        <span id="follower-label">TikTok Followers</span>
+        <span id="follower-count">...</span>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const navbar = document.querySelector(".navbar");
@@ -50,11 +55,34 @@
                 navMenu.classList.toggle("show");
             });
         });
+
+        function formatNumber(num) {
+            if (num >= 1_000_000) {
+                return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + "M";
+            }
+            if (num >= 1_000) {
+                return (num / 1_000).toFixed(1).replace(/\.0$/, '') + "K";
+            }
+            return num.toString();
+            }
+
+            async function fetchFollowers() {
+            try {
+                let res = await fetch("https://lulekbot.onrender.com/followers");
+                let data = await res.json();
+                document.getElementById("follower-count").textContent =
+                formatNumber(data.followers);
+            } catch(e) {
+                console.error("Failed to fetch followers", e);
+            }
+            }
+
+            setInterval(fetchFollowers, 60000);
+            fetchFollowers();
     </script>
 
     <footer>
         <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
     </footer>
 </body>
-
 </html>
