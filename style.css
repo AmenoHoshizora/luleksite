@@ -508,6 +508,43 @@ color: #fff;
   border-radius: 3px;
 }
 
+#live-indicator {
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#live-indicator.live #live-status {
+  color: red;
+}
+
+#live-indicator.offline #live-status {
+  color: gray;
+}
+
+#follower-box {
+  display: inline-block;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+}
+
+#follower-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+#follower-count {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ff6fb2;
+}
+
 @media (max-width: 768px) {
     header img { max-width: 80%; height: auto; }
     .parallax-bg {
