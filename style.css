@@ -454,7 +454,7 @@ color: #fff;
 
 .navbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
   background: rgba(255, 255, 255, 0.9); /* solid at top */
@@ -467,6 +467,28 @@ color: #fff;
 
 .navbar.transparent {
   background: rgba(255, 255, 255, 0); /* fully transparent */
+}
+
+.nav-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+  font-family: 'Nunito', sans-serif;
+  transition: opacity 0.2s;
+}
+
+.nav-badge:hover {
+  opacity: 0.7;
+}
+
+.nav-badge img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 6px; /* optional */
 }
 
 .nav-links {
@@ -547,6 +569,16 @@ color: #fff;
 
 @media (max-width: 768px) {
     header img { max-width: 80%; height: auto; }
+    .nav-badge {
+        flex-direction: column; /* stack image and text */
+        gap: 4px;
+        font-size: 0.5rem; /* smaller text */
+    }
+
+    .nav-badge img {
+        width: 22px;
+        height: 22px; /* smaller image */
+    }
     .parallax-bg {
     background: url("luli1crop.JPG") no-repeat center center;
     background-size: cover;
