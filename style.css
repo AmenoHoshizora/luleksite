@@ -40,6 +40,15 @@ header img:hover {
             drop-shadow(0 0 50px rgba(255, 255, 255, 0.8));
 }
 
+.love {
+  position: fixed;
+  top: 0;
+  font-size: 2rem;
+  user-select: none;
+  pointer-events: auto;
+  will-change: transform;
+}
+
 @keyframes glowPulse {
     0%, 100% { text-shadow: 0 0 10px #ffb6f9, 0 0 20px #b3e5fc; }
     50%      { text-shadow: 0 0 25px #ff9edf, 0 0 45px #a7e0ff; }
@@ -545,13 +554,21 @@ color: #fff;
 }
 
 #follower-box {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   padding: 12px 20px;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   font-family: 'Nunito', sans-serif;
-  text-align: center;
+  margin-top: 20px;
+}
+
+#tiktok-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 #follower-label {
@@ -562,7 +579,7 @@ color: #fff;
 }
 
 #follower-count {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: #ff6fb2;
 }
@@ -570,14 +587,14 @@ color: #fff;
 @media (max-width: 768px) {
     header img { max-width: 80%; height: auto; }
     .nav-badge {
-        flex-direction: column; /* stack image and text */
+        flex-direction: column; 
         gap: 4px;
-        font-size: 0.5rem; /* smaller text */
+        font-size: 0.5rem; 
     }
 
     .nav-badge img {
         width: 22px;
-        height: 22px; /* smaller image */
+        height: 22px;
     }
     .parallax-bg {
     background: url("luli1crop.JPG") no-repeat center center;
