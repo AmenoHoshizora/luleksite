@@ -39,8 +39,9 @@
     </div>
   </div>
 
-  <section id="live-indicator" style="display:none;">
-    🔴 Luliyy is LIVE! <a id="live-link" href="https://www.tiktok.com/@luliyykitty/live" target="_blank">Watch Now</a>
+  <section id="live-indicator">
+    <span id="live-status">⚫ Currently Offline</span>
+    <a id="live-link" href="https://www.tiktok.com/@luliyykitty/live" target="_blank" style="display:none;">Watch Now</a>
   </section>
 
   <section class="links">
@@ -220,17 +221,31 @@
         });
 
     async function checkLive() {
-      let res = await fetch("/status"); // Flask endpoint or live_status.json
-      let data = await res.json();
-    
-      if (data.live) {
-        document.getElementById("live-indicator").style.display = "block";
-        document.getElementById("live-link").href = data.link;
-      } else {
-        document.getElementById("live-indicator").style.display = "none";
+      try {
+        let res = await fetch("https://lulekbot.onrender.com/status");
+        let data = await res.json();
+
+        const indicator = document.getElementById("live-indicator");
+        const status = document.getElementById("live-status");
+        const link = document.getElementById("live-link");
+
+        if (data.live) {
+          indicator.classList.add("live");
+          indicator.classList.remove("offline");
+          status.textContent = "🔴 Luliyy is LIVE!";
+          link.href = data.link || "https://www.tiktok.com/@luliyykitty/live";
+          link.style.display = "inline-block";
+        } else {
+          indicator.classList.add("offline");
+          indicator.classList.remove("live");
+          status.textContent = "⚫ Currently Offline";
+          link.style.display = "none";
+        }
+      } catch (e) {
+        console.error("Could not fetch live status:", e);
       }
     }
-    
+
     setInterval(checkLive, 30000); // check every 30s
     checkLive();
   </script>
@@ -241,4 +256,3 @@
 </body>
 
 </html>
-
