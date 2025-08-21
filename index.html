@@ -39,6 +39,10 @@
     </div>
   </div>
 
+  <section id="live-indicator" style="display:none;">
+    🔴 Luliyy is LIVE! <a id="live-link" href="https://www.tiktok.com/@luliyykitty/live" target="_blank">Watch Now</a>
+  </section>
+
   <section class="links">
     <h2>Find Me Here</h2>
       <div class="link-buttons">
@@ -214,6 +218,21 @@
                 navMenu.classList.toggle("show");
             });
         });
+
+    async function checkLive() {
+      let res = await fetch("/status"); // Flask endpoint or live_status.json
+      let data = await res.json();
+    
+      if (data.live) {
+        document.getElementById("live-indicator").style.display = "block";
+        document.getElementById("live-link").href = data.link;
+      } else {
+        document.getElementById("live-indicator").style.display = "none";
+      }
+    }
+    
+    setInterval(checkLive, 30000); // check every 30s
+    checkLive();
   </script>
 
   <footer>
@@ -222,3 +241,4 @@
 </body>
 
 </html>
+
