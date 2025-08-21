@@ -30,7 +30,7 @@
   </header>
 
   <header>
-    <img src="luwek.png" height="400" width="400">
+    <img id="header-img" src="luwek.png" height="400" width="400">
   </header>
 
   <div class="parallax-hero" id="about-hero">
@@ -101,6 +101,76 @@
   </div>
 
   <script>
+    let clickCount = 0;
+  const headerImg = document.getElementById("header-img");
+
+  headerImg.addEventListener("click", () => {
+    clickCount++;
+    if (clickCount === 8) {
+      startLoveRain();
+      clickCount = 0;
+    }
+  });
+
+  function startLoveRain() {
+    for (let i = 0; i < 60; i++) {
+      setTimeout(() => createLove(), i * 100);
+    }
+  }
+
+  function createLove() {
+    const love = document.createElement("div");
+    love.classList.add("love");
+    love.textContent = "💌";
+
+    let x = Math.random() * window.innerWidth;
+    let y = -50;
+    let vx = (Math.random() - 0.5) * 1.5;
+    let vy = 2 + Math.random() * 2;     
+    let angle = Math.random() * 360;
+    let flutterSpeed = 0.5 + Math.random() * 0.5;
+
+    document.body.appendChild(love);
+
+    let landed = false;
+    let landedTimer = null;
+
+    function animate() {
+      if (!landed) {
+        x += vx;
+        y += vy;
+        angle += Math.sin(y / 25) * flutterSpeed;
+
+        if (vy < 2) vy += 0.1;
+
+        love.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
+
+        if (y >= window.innerHeight - 40) {
+          y = window.innerHeight - 40;
+          landed = true;
+
+          landedTimer = setTimeout(() => {
+            love.style.transition = "opacity 1s";
+            love.style.opacity = "0";
+            setTimeout(() => love.remove(), 1000);
+          }, 4000);
+        }
+      }
+
+      if (!landed) requestAnimationFrame(animate);
+    }
+    animate();
+
+    love.addEventListener("mouseenter", () => bounceAway());
+    love.addEventListener("touchstart", () => bounceAway());
+
+    function bounceAway() {
+      if (!landed) {
+        vy = -5; 
+      }
+    }
+  }
+
     async function loadOnlineMembers() {
       try {
         let res = await fetch("https://lulekbot.onrender.com/api/online_members"); 
