@@ -83,10 +83,38 @@
       messageBox.className = "form-message";
     }, 5000);
   });
+
+  document.addEventListener("DOMContentLoaded", () => {
+            const navbar = document.querySelector(".navbar");
+
+            window.addEventListener("scroll", () => {
+                const scrollY = window.scrollY;
+
+                if (scrollY > 10) {
+                navbar.classList.add("transparent");
+                } else {
+                navbar.classList.remove("transparent");
+                }
+            });
+
+            const navLinks = document.querySelectorAll(".nav-links a");
+            navLinks.forEach(link => {
+                if (link.href === window.location.href) {
+                link.classList.add("active");
+                }
+            });
+
+            const hamburger = document.querySelector(".hamburger");
+            const navMenu = document.querySelector(".nav-links");
+            hamburger.addEventListener("click", () => {
+                navMenu.classList.toggle("show");
+            });
+        });
 </script>
 
   <footer>
     <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
   </footer>
 </body>
+
 </html>
