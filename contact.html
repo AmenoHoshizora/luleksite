@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact • LuliyyKitty</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="https://hololist.net/luliyy-kitty" class="nav-badge" target="_blank">
+        <img src="hololist.png" alt="Logo">
+        <span>Check out my Hololist page!</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a class="active" href="contact.html">Contact</a></li>
+      </ul>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="contact-page">
+    <h1>Contact Me</h1>
+    <p>If you’d like to reach out, please send me a message below ✨</p>
+
+    <form id="contact-form" class="contact-form">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
+
+      <button type="submit">Send 💌</button>
+    </form>
+  </main>
+
+  <div id="form-message" class="form-message"></div>
+
+<script>
+  const form = document.getElementById("contact-form");
+  const messageBox = document.getElementById("form-message");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); 
+
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch("https://formspree.io/f/xzzjbwge", { // ← your Formspree endpoint
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        messageBox.textContent = "✅ Thank you! Your message has been sent.";
+        messageBox.className = "form-message success";
+        form.reset();
+      } else {
+        messageBox.textContent = "⚠️ Oops! Something went wrong. Please try again.";
+        messageBox.className = "form-message error";
+      }
+    } catch (err) {
+      messageBox.textContent = "⚠️ Could not send message. Check your connection.";
+      messageBox.className = "form-message error";
+    }
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      messageBox.textContent = "";
+      messageBox.className = "form-message";
+    }, 5000);
+  });
+</script>
+
+  <footer>
+    <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
+  </footer>
+</body>
+</html>
