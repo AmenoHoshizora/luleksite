@@ -663,6 +663,83 @@ color: #fff;
   opacity: 1;
 }
 
+.contact-page {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.contact-page h1{
+  color: #ff7ad3;
+}
+
+.contact-page p{
+  color: #d946ef;
+}
+
+.contact-form label {
+  text-align: left;
+  font-weight: 600;
+  color: #000000;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.contact-form button {
+  background: #ff7bdc;
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.contact-form button:hover {
+  background: #ff4dc4;
+}
+
+.form-message {
+  margin-top: 15px;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  display: inline-block;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.form-message.success {
+  color: #155724;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  opacity: 1;
+}
+
+.form-message.error {
+  color: #721c24;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  opacity: 1;
+}
+
 @media (max-width: 768px) {
     header img { max-width: 80%; height: auto; }
     .nav-badge {
@@ -754,3 +831,4 @@ color: #fff;
     bottom: 35px;
     }
 }
+
