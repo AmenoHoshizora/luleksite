@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: "Segoe UI", sans-serif;
+    font-family: "Poppins", "Segoe UI", sans-serif;
     background: linear-gradient(135deg, #b3e5fc, #ffc1e3);
     color: #fefefe;
     line-height: 1.6;
@@ -95,7 +95,6 @@ header img:hover {
     font-weight: 800;
     margin-bottom: 12px;
     background: linear-gradient(90deg, #4dc7ff, #fb6ebc);
-    -webkit-text-stroke: 0.25px rgb(0, 0, 0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -644,7 +643,6 @@ color: #fff;
     font-weight: 800;
     margin-bottom: 12px;
     background: linear-gradient(90deg, #4dc7ff, #fb6ebc);
-    -webkit-text-stroke: 0.25px rgb(0, 0, 0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -676,6 +674,7 @@ color: #fff;
   margin: 60px auto;
   padding: 20px;
   text-align: center;
+  font-family: "Poppins", "Segoe UI", sans-serif;
 }
 
 .contact-form {
@@ -856,5 +855,3 @@ color: #fff;
     bottom: 35px;
     }
 }
-
-
