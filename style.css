@@ -776,8 +776,9 @@ color: #fff;
       background-image: url("lulek1crop.jpg");
     }
 
-    .about-text {
+    .abt-text {
     text-align: center;
+    font-size: 0.9rem;
     }
     section { margin: 20px auto; padding: 15px; }
     .link-buttons { gap: 16px; }
@@ -846,3 +847,4 @@ color: #fff;
     bottom: 35px;
     }
 }
+
