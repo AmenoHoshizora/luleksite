@@ -465,6 +465,7 @@ color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: 'Poppins', sans-serif;
   padding: 12px 20px;
   background: rgba(255, 255, 255, 0.9); /* solid at top */
   backdrop-filter: blur(6px);
@@ -485,7 +486,6 @@ color: #fff;
   text-decoration: none;
   color: #333;
   font-weight: 600;
-  font-family: 'Nunito', sans-serif;
   transition: opacity 0.2s;
 }
 
@@ -506,9 +506,15 @@ color: #fff;
   gap: 20px;
 }
 
+.nav-links a {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  color: #000;
+}
+
 .nav-links li a {
   text-decoration: none;
-  font-family: 'Nunito', sans-serif;
   font-weight: 600;
   color: #333;
   padding: 6px 10px;
@@ -612,10 +618,12 @@ color: #fff;
 .about-section.left .about-img {
   left: 0;
   transform: translateX(-100%);
+  background-image: url("luli.jpg");
 }
 .about-section.right .about-img {
   right: 0;
-  transform: translateX(100%);  /* off-page right */
+  transform: translateX(100%);
+  background-image: url("lulek1.jpg");
 }
 
 /* TEXT */
@@ -760,6 +768,14 @@ color: #fff;
     justify-content: center;
     }
 
+    .about-section.left .about-img {
+      background-image: url("lulicrop.jpg");
+    }
+
+    .about-section.right .about-img {
+      background-image: url("lulek1crop.jpg");
+    }
+
     .about-text {
     text-align: center;
     }
@@ -830,5 +846,3 @@ color: #fff;
     bottom: 35px;
     }
 }
-
-
