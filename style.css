@@ -632,7 +632,7 @@ color: #fff;
   color: white;
   text-align: center;
   max-width: 70%;
-  font-family: 'Nunito', sans-serif;
+  font-family: "Poppins", "Segoe UI", sans-serif;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
   opacity: 0;
   transition: transform 1s ease, opacity 1s ease;
@@ -781,7 +781,7 @@ color: #fff;
 
     .abt-text h2{
     text-align: center;
-    font-size: 1.0rem;
+    font-size: 1.4rem;
     }
 
     .abt-text p{
