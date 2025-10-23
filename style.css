@@ -776,7 +776,16 @@ color: #fff;
       background-image: url("lulek1crop.jpg");
     }
 
-    .abt-text {
+    .about-text {
+    text-align: center;
+    }
+
+    .abt-text h2{
+    text-align: center;
+    font-size: 1.0rem;
+    }
+
+    .abt-text p{
     text-align: center;
     font-size: 0.9rem;
     }
@@ -847,4 +856,5 @@ color: #fff;
     bottom: 35px;
     }
 }
+
 
