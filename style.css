@@ -746,6 +746,221 @@ color: #fff;
   opacity: 1;
 }
 
+.timeline {
+  position: relative;
+  max-width: 80%;
+  background: #fff8fb;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+/* Title */
+.timeline-title {
+  text-align: center;
+  font-family: 'Pacifico', cursive;
+  margin-bottom: 100px;
+  font-size: 2.8rem;
+  color: #ff7ad3;
+  position: relative;
+  z-index: 3;
+}
+
+/* Center line */
+.timeline::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  background-color: #ff91c1;
+  top: 140px;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 4px;
+  z-index: 0;
+}
+
+/* Each timeline item */
+.timeline-item {
+  position: relative;
+  width: 35%;
+  padding: 20px 30px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  margin: 60px 0;
+  opacity: 0;
+  transition: all 0.8s ease;
+  z-index: 1;
+}
+
+/* Alternate positions */
+.timeline-item:nth-child(odd) {
+  left: 8%; /* more space from line */
+  transform: translateX(80px); /* slide toward the line */
+}
+
+.timeline-item:nth-child(even) {
+  left: 57%; /* more space from line */
+  transform: translateX(-80px); /* slide toward the line */
+}
+
+/* Reveal animation */
+.timeline-item.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Circle and connector */
+.timeline-item::before,
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  top: 50px;
+  z-index: 2;
+}
+
+/* Circle */
+.timeline-item::before {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff7eb3;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 4px #ffd1dc;
+}
+
+/* Connector line */
+.timeline-item::after {
+  height: 4px;
+  background: #ffd1dc;
+}
+
+/* Left side */
+.timeline-item:nth-child(odd)::before {
+  right: -114.5px; /* circle sits on line */
+}
+
+.timeline-item:nth-child(odd)::after {
+  right: -90px;
+  width: 90px; /* connector length */
+}
+
+/* Right side */
+.timeline-item:nth-child(even)::before {
+  left: -114.5px;
+}
+
+.timeline-item:nth-child(even)::after {
+  left: -90px;
+  width: 90px;
+}
+
+/* Box content */
+.timeline-content {
+  background: #fff0fa;
+  padding: 25px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.timeline-img {
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.timeline-content h2 {
+  font-family: 'Pacifico', cursive;
+  margin-bottom: 10px;
+  font-size: 1.6rem;
+  color: #ff5faa;
+}
+
+.timeline-content .date {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.timeline-content p {
+  font-size: 1rem;
+  color: #ea62ff;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  line-height: 1.6;
+}
+
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+}
+
+.image-modal img {
+  max-width: 90%;
+  max-height: 85%;
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(255,255,255,0.3);
+}
+
+.image-modal.active {
+  display: flex;
+}
+
+.image-modal::after {
+  content: "✕";
+  position: absolute;
+  top: 25px;
+  right: 35px;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.image-modal::after:hover {
+  color: #ff7eb3;
+}
+
+.tiktok-video {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.tiktok-video:hover {
+  transform: scale(1.03);
+}
+
+.tiktok-video img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
+.tiktok-video::after {
+  content: "▶";
+  position: absolute;
+  font-size: 3rem;
+  color: white;
+  text-shadow: 0 0 10px rgba(0,0,0,0.6);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 @media (max-width: 768px) {
     header img { max-width: 80%; height: auto; }
     .nav-badge {
@@ -822,7 +1037,54 @@ color: #fff;
     .hamburger {
         display: flex;
     }
-}
+
+    .timeline {
+      max-width: 95%;
+    }
+
+    /* Line moves to the left edge */
+    .timeline::after {
+      left: 25px;
+    }
+
+    .timeline-item {
+      width: calc(100% - 70px);
+      left: 60px !important;
+      transform: translateY(40px);
+    }
+
+    .timeline-item.show {
+      transform: translateY(0);
+    }
+
+    /* Adjust circle position */
+    .timeline-item::before {
+      left: -34px !important;
+      width: 16px;
+      height: 16px;
+      box-shadow: 0 0 0 3px #ffd1dc;
+    }
+
+    .timeline-item::after {
+      display: none; /* hide connector line on mobile */
+    }
+
+    .timeline-content {
+      padding: 20px;
+    }
+
+    .timeline-content h2 {
+      font-size: 1.1rem;
+    }
+
+    .timeline-content p {
+      font-size: 0.9rem;
+    }
+
+    .timeline-content .date {
+      font-size: 0.8rem;
+    }
+  }
 
 @media (max-width: 480px) {
     header img { max-width: 70%; }
