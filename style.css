@@ -837,22 +837,22 @@ color: #fff;
 
 /* Left side */
 .timeline-item:nth-child(odd)::before {
-  right: -114.5px; /* circle sits on line */
+  right: -92.5px; /* circle sits on line */
 }
 
 .timeline-item:nth-child(odd)::after {
-  right: -90px;
-  width: 90px; /* connector length */
+  right: -70px;
+  width: 70px; /* connector length */
 }
 
 /* Right side */
 .timeline-item:nth-child(even)::before {
-  left: -114.5px;
+  left: -92.5px;
 }
 
 .timeline-item:nth-child(even)::after {
-  left: -90px;
-  width: 90px;
+  left: -70px;
+  width: 70px;
 }
 
 /* Box content */
