@@ -1126,6 +1126,41 @@ body.modal-open {
   }
 }
 
+.timeline-item.upcoming .timeline-content {
+  border: 2px dashed #ff7eb3;
+  background: rgba(255, 247, 252, 0.9);
+  box-shadow: 0 0 12px rgba(255, 126, 179, 0.3);
+  position: relative;
+}
+
+.timeline-item.upcoming .timeline-content::before {
+  content: "COMING SOON";
+  position: absolute;
+  top: -12px;
+  right: 15px;
+  background: #ff7eb3;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(255, 126, 179, 0.3);
+}
+
+.timeline-item.upcoming .timeline-content {
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(255, 126, 179, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 126, 179, 0.6);
+  }
+}
+
 @media (max-width: 768px) {
     header img { max-width: 80%; height: auto; }
     .nav-badge {
@@ -1282,4 +1317,5 @@ body.modal-open {
     bottom: 35px;
     }
 }
+
 
