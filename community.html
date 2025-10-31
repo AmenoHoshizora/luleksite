@@ -241,6 +241,8 @@
   }
 
   function makeDraggable(el) {
+    if (window.innerWidth <= 768) return; // skip for mobile
+
     let offsetX, offsetY, isDragging = false;
 
     el.addEventListener("mousedown", e => {
