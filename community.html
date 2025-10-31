@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community • LuliyyKitty</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700&family=Poppins:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+      <nav class="navbar">
+        <a href="https://hololist.net/luliyy-kitty" class="nav-badge" target="_blank">
+          <img src="hololist.png" alt="Logo">
+          <span>Check out my Hololist page!</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="history.html">History</a></li>
+          <li><a class="active" href="community.html">Community</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </nav>
+    </header>
+
+    <section class="fanart-board" id="fanart-board"></section>
+
+  <script>
+  async function loadFanart() {
+    const pastelColors = ["#fff7b1", "#ffe6f2", "#e3f9ff", "#d4ffd4", "#fff0d6"];
+    const pinColors = ["#ff7b7b", "#ffb347", "#90ee90", "#87cefa", "#dda0dd"];
+
+    const res = await fetch("https://lulekbot.onrender.com/api/fanart");
+    const data = await res.json();
+    const board = document.getElementById("fanart-board");
+    const isMobile = window.innerWidth <= 768;
+
+    board.innerHTML = data.map((f) => {
+      const rotation = (Math.random() * 10 - 5).toFixed(2);
+      const xOffset = (Math.random() * 20 - 10).toFixed(1);
+      const yOffset = (Math.random() * 20 - 10).toFixed(1);
+      const bgColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
+      const pinColor = pinColors[Math.floor(Math.random() * pinColors.length)];
+
+      // Build deep Discord link
+      let jump = f.jump_url || "";
+      let deepLink = jump;
+      const match = jump.match(/discord\.com\/channels\/(\d+)\/(\d+)\/(\d+)/);
+      if (match) {
+        deepLink = `discord://-/channels/${match[1]}/${match[2]}/${match[3]}`;
+      }
+
+      // Image gallery HTML
+      const slidesHTML = f.images.map((img, i) => `
+        <div class="slide ${i === 0 ? 'active' : ''}">
+          <img src="${img}" alt="Fanart by ${f.author}">
+        </div>`).join('');
+
+      return `
+        <div class="post-it"
+          style="
+            background:${bgColor};
+            --pin-color:${pinColor};
+            --tilt:${rotation}deg;
+            --xOffset:${xOffset}px;
+            --yOffset:${yOffset}px;
+            transform: translate(${xOffset}px, ${yOffset}px) rotate(${rotation}deg);
+          ">
+          <div class="thumbtack"></div>
+          <div class="fanart-gallery">
+            ${slidesHTML}
+            ${f.images.length > 1 && !isMobile ? `
+              <button class="prev">❮</button>
+              <button class="next">❯</button>` : ""}
+          </div>
+          <p>🎨 <a href="${deepLink}" class="fanart-author">${f.author}</a></p>
+        </div>`;
+    }).join("");
+
+    // --- Enable gallery slide navigation ---
+    document.querySelectorAll(".fanart-gallery").forEach((gallery) => {
+      const slides = gallery.querySelectorAll(".slide");
+      if (slides.length < 2) return;
+      let current = 0;
+
+      const showSlide = (i) => {
+        slides.forEach((s) => s.classList.remove("active"));
+        slides[i].classList.add("active");
+      };
+
+      const prev = gallery.querySelector(".prev");
+      const next = gallery.querySelector(".next");
+
+      if (prev && next) {
+        prev.addEventListener("click", (e) => {
+          e.stopPropagation();
+          current = (current - 1 + slides.length) % slides.length;
+          showSlide(current);
+        });
+        next.addEventListener("click", (e) => {
+          e.stopPropagation();
+          current = (current + 1) % slides.length;
+          showSlide(current);
+        });
+      }
+    });
+
+    // --- Modal enlarge on image click ---
+    const modal = document.createElement("div");
+    modal.classList.add("image-modal");
+    const modalImg = document.createElement("img");
+    modal.appendChild(modalImg);
+    document.body.appendChild(modal);
+
+    document.querySelectorAll(".slide img").forEach((img) => {
+      img.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        modalImg.src = img.src;
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      });
+    });
+
+    modal.addEventListener("click", () => {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
+    });
+  }
+
+  loadFanart();
+
+  // nav logic unchanged
+  document.addEventListener("DOMContentLoaded", () => {
+    const navbar = document.querySelector(".navbar");
+    window.addEventListener("scroll", () => {
+      navbar.classList.toggle("transparent", window.scrollY > 10);
+    });
+    const navLinks = document.querySelectorAll(".nav-links a");
+    navLinks.forEach((link) => { if (link.href === window.location.href) link.classList.add("active"); });
+    const hamburger = document.querySelector(".hamburger");
+    const navMenu = document.querySelector(".nav-links");
+    hamburger.addEventListener("click", () => navMenu.classList.toggle("show"));
+  });
+  </script>
+
+    <footer>
+      <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
+    </footer>
+</body>
+
+</html>
