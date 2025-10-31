@@ -1305,6 +1305,217 @@ body.modal-open {
   transform: scale(1.2);
 }
 
+.notes-section {
+  text-align: center;
+  padding: 40px 20px;
+  max-width: 95%;
+  background: linear-gradient(180deg, #fffafc 0%, #fff7f9 100%);
+  border-top: 2px dashed #ffb6c1;
+  border-radius: 0 0 18px 18px;
+  box-shadow: inset 0 4px 12px rgba(255,182,249,0.15);
+}
+
+.notes-section h2 {
+  font-family: 'Pacifico', cursive;
+  color: #ff7eb3;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+.notes-section form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+.notes-section input[type="text"],
+.notes-section textarea {
+  padding: 10px 12px;
+  border: 1.5px solid #ffd6e7;
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  background: #fffdfd;
+  transition: 0.3s;
+}
+
+.notes-section input[type="text"]:focus,
+.notes-section textarea:focus {
+  border-color: #ff9ecd;
+  box-shadow: 0 0 6px rgba(255,150,200,0.3);
+  outline: none;
+}
+
+.notes-section textarea {
+  width: 320px;
+  height: 80px;
+  resize: none;
+}
+
+.note-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-picker-label {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.notes-section input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.notes-section input[type="color"]:hover {
+  transform: scale(1.1);
+}
+
+.notes-section button {
+  background: linear-gradient(135deg, #ff8ec9, #ff6fb2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.notes-section button:hover {
+  background: linear-gradient(135deg, #ff5fa7, #ff83c6);
+  transform: translateY(-1px);
+}
+
+/* --- Notes board --- */
+.notes-board {
+  position: relative;
+  height: 1600px;
+  background: repeating-linear-gradient(
+    45deg,
+    #fffdf9,
+    #fffdf9 50px,
+    #fff7f2 50px,
+    #fff7f2 100px
+  );
+  border-radius: 20px;
+  margin: 0 auto;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.notes-wrapper {
+  width: 100%;
+  overflow: auto;          /* scroll if too big */
+  padding: 20px;
+}
+
+.note {
+  position: absolute;
+  cursor: grab;
+  transition: transform 0.1s ease;
+  padding: 20px;
+}
+
+.note p{
+  color: #000;
+}
+
+.note:active {
+  cursor: grabbing;
+  transform: scale(1.03);
+}
+
+.note:hover {
+  transform: scale(1.05) rotate(calc(var(--tilt, 0deg)));
+  z-index: 3;
+}
+
+/* Add fake pin at top */
+.note::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: #ff7eb3;
+  border-radius: 50%;
+  box-shadow: inset -2px -2px 3px rgba(0,0,0,0.25);
+}
+
+.note small {
+  display: block;
+  text-align: right;
+  margin-top: 10px;
+  color: #555;
+  font-size: 0.8rem;
+}
+
+.community-tabs {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tab-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  background: #ffe6f2;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.tab-btn:hover {
+  background: #ffd1e8;
+}
+
+.tab-btn.active {
+  background: #ff7eb3;
+  color: white;
+  box-shadow: 0 5px 12px rgba(255, 126, 179, 0.3);
+}
+
+/* --- Tab content toggle --- */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
     header img { max-width: 80%; height: auto; }
     .nav-badge {
@@ -1460,6 +1671,22 @@ body.modal-open {
 
     .prev, .next {
       display: none;
+    }
+
+    .notes-section {
+      width: 98%;
+    }
+
+    .notes-section form {
+      flex-direction: column;
+    }
+
+    .notes-section textarea {
+      width: 100%;
+    }
+
+    .note {
+      width: 75%;
     }
   }
 

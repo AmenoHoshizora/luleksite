@@ -30,8 +30,40 @@
       </nav>
     </header>
 
-    <section class="fanart-board" id="fanart-board"></section>
+    <div class="community-tabs">
+      <div class="tab-divider">
+        <button class="tab-btn active" data-tab="fanart">🎨 Fanart</button>
+        <button class="tab-btn" data-tab="notes">📝 Sticky Notes</button>
+        <div class="tab-underline"></div>
+      </div>  
 
+      <!-- FANART SECTION -->
+      <div id="tab-fanart" class="tab-content active">
+        <section class="fanart-board" id="fanart-board"></section>
+      </div>
+
+      <div id="tab-notes" class="tab-content">
+        <section class="notes-section">
+          <h2>Community Notes</h2>
+
+          <form onsubmit="event.preventDefault(); addNote();">
+            <input type="text" id="author" placeholder="Your name (optional)">
+            <textarea id="content" placeholder="Write your note..." required></textarea>
+            <div class="note-controls">
+              <label for="color" class="color-picker-label">🎨</label>
+              <input type="color" id="color" value="#fff7b1">
+              <button type="submit">📌 Stick Note</button>
+            </div>
+          </form>
+
+          <div class="notes-wrapper">
+            <div id="notes-board" class="notes-board"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   async function loadFanart() {
     const pastelColors = ["#fff7b1", "#ffe6f2", "#e3f9ff", "#d4ffd4", "#fff0d6"];
@@ -148,6 +180,150 @@
     const hamburger = document.querySelector(".hamburger");
     const navMenu = document.querySelector(".nav-links");
     hamburger.addEventListener("click", () => navMenu.classList.toggle("show"));
+  });
+
+  const SUPABASE_URL = "https://hawxtrgfskqoyveyathl.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhhd3h0cmdmc2txb3l2ZXlhdGhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDczODMsImV4cCI6MjA3NzQ4MzM4M30.fYinRM_sBeam2W_0Ylg7PezTQNSW0kmLr3X4Ac2S8QQ";
+
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function loadNotes() {
+    const { data, error } = await client
+      .from("community_notes")
+      .select("*")
+      .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+      .order("id", { ascending: true }); // 🧠 sort stable for consistent positions
+
+    if (error) console.error(error);
+    else renderNotes(data);
+  }
+
+  async function renderNotes(notes) {
+    const board = document.getElementById("notes-board");
+    board.innerHTML = "";
+
+    notes.forEach(n => {
+      const note = document.createElement("div");
+      note.className = "note";
+      note.style.background = n.color || "#fff7b1";
+      note.style.left = (n.pos_x ?? 100) + "px";
+      note.style.top = (n.pos_y ?? 100) + "px";
+      note.dataset.id = n.id;
+
+      note.innerHTML = `
+        <p>${n.content}</p>
+        <small>— ${n.author}</small>
+      `;
+
+      makeDraggable(note);
+      board.appendChild(note);
+    });
+  }
+
+  async function addNote() {
+    const author = document.getElementById("author").value || "Anonymous";
+    const content = document.getElementById("content").value.trim();
+    const color = document.getElementById("color").value || "#fff7b1";
+    if (!content) return;
+
+    const board = document.getElementById("notes-board");
+    const rect = board.getBoundingClientRect();
+    const pos_x = rect.width / 2 - 90;
+    const pos_y = rect.height / 2 - 60;
+
+    const { data, error } = await client
+      .from("community_notes")
+      .insert([{ author, content, color, pos_x, pos_y }])
+      .select();
+
+    if (error) console.error(error);
+    else loadNotes();
+  }
+
+  function makeDraggable(el) {
+    let offsetX, offsetY, isDragging = false;
+
+    el.addEventListener("mousedown", e => {
+      isDragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+      el.style.zIndex = 10;
+      e.preventDefault();
+    });
+
+    document.addEventListener("mousemove", e => {
+      if (!isDragging) return;
+
+      const board = document.getElementById("notes-board");
+      const wrapper = document.querySelector(".notes-wrapper");
+      const rect = board.getBoundingClientRect();
+
+      const x = e.clientX - rect.left + wrapper.scrollLeft - offsetX;
+      const y = e.clientY - rect.top + wrapper.scrollTop - offsetY;
+
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+    });
+
+    document.addEventListener("mouseup", async e => {
+      if (!isDragging) return;
+      isDragging = false;
+      el.style.zIndex = 1;
+
+      const x = parseFloat(el.style.left);
+      const y = parseFloat(el.style.top);
+      const id = el.dataset.id;
+
+      console.log("💾 Saving position", { id, x, y });
+
+      const { data, error } = await client
+        .from("community_notes")
+        .update({ pos_x: x, pos_y: y })
+        .eq("id", id)
+        .select();
+
+      if (error) console.error("❌ Position save failed:", error);
+      else console.log("✅ Saved to DB:", data);
+    });
+  }
+
+  // ✅ Realtime listener
+  client
+    .channel('public:community_notes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'community_notes' }, payload => {
+      console.log('Realtime change detected:', payload);
+      loadNotes();
+    })
+    .subscribe();
+
+  // ✅ Initial load
+  loadNotes();
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabs = document.querySelectorAll(".tab-btn");
+    const contents = document.querySelectorAll(".tab-content");
+    const underline = document.querySelector(".tab-underline");
+
+    function moveUnderline(activeTab) {
+      const rect = activeTab.getBoundingClientRect();
+      const parentRect = activeTab.parentElement.getBoundingClientRect();
+      underline.style.left = `${rect.left - parentRect.left}px`;
+      underline.style.width = `${rect.width}px`;
+    }
+
+    // Initial position
+    const activeTab = document.querySelector(".tab-btn.active");
+    if (activeTab) moveUnderline(activeTab);
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(`tab-${tab.dataset.tab}`).classList.add("active");
+        moveUnderline(tab);
+      });
+    });
   });
   </script>
 
