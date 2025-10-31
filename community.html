@@ -221,24 +221,37 @@
   }
 
   async function addNote() {
-    const author = document.getElementById("author").value || "Anonymous";
-    const content = document.getElementById("content").value.trim();
-    const color = document.getElementById("color").value || "#fff7b1";
-    if (!content) return;
-
-    const board = document.getElementById("notes-board");
-    const rect = board.getBoundingClientRect();
-    const pos_x = rect.width / 2 - 90;
-    const pos_y = rect.height / 2 - 60;
-
-    const { data, error } = await client
-      .from("community_notes")
-      .insert([{ author, content, color, pos_x, pos_y }])
-      .select();
-
-    if (error) console.error(error);
-    else loadNotes();
-  }
+      const authorInput = document.getElementById("author");
+      const contentInput = document.getElementById("content");
+      const colorInput = document.getElementById("color");
+    
+      const author = authorInput.value || "Anonymous";
+      const content = contentInput.value.trim();
+      const color = colorInput.value || "#fff7b1";
+    
+      if (!content) return;
+    
+      const board = document.getElementById("notes-board");
+      const rect = board.getBoundingClientRect();
+      const pos_x = rect.width / 2 - 90;
+      const pos_y = rect.height / 2 - 60;
+    
+      const { error } = await client
+        .from("community_notes")
+        .insert([{ author, content, color, pos_x, pos_y }]);
+    
+      if (error) {
+        console.error(error);
+      } else {
+        // ✅ Clear fields after successful submit
+        authorInput.value = "";
+        contentInput.value = "";
+        colorInput.value = "#fff7b1";
+    
+        // Refresh the board
+        loadNotes();
+      }
+    }
 
   function makeDraggable(el) {
     if (window.innerWidth <= 768) return; // skip for mobile
@@ -335,3 +348,4 @@
 </body>
 
 </html>
+
