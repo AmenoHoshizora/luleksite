@@ -34,6 +34,7 @@
       <div class="tab-divider">
         <button class="tab-btn active" data-tab="fanart">🎨 Fanart</button>
         <button class="tab-btn" data-tab="notes">📝 Sticky Notes</button>
+        <button class="tab-btn" data-tab="game">💌 Mini Game</button>
         <div class="tab-underline"></div>
       </div>  
 
@@ -59,6 +60,17 @@
           <div class="notes-wrapper">
             <div id="notes-board" class="notes-board"></div>
           </div>
+        </section>
+      </div>
+
+      <div id="tab-game" class="tab-content">
+        <section id="game-section">
+          <h2>💌 Luliyy’s Letter Catch</h2>
+          <div id="game-area">
+            <img id="player" src="images/luliyy.png" alt="Player">
+          </div>
+          <div class="scoreboard">Score: <span id="score">0</span></div>
+          <button id="start-btn">Start Game</button>
         </section>
       </div>
     </div>
@@ -221,37 +233,24 @@
   }
 
   async function addNote() {
-      const authorInput = document.getElementById("author");
-      const contentInput = document.getElementById("content");
-      const colorInput = document.getElementById("color");
-    
-      const author = authorInput.value || "Anonymous";
-      const content = contentInput.value.trim();
-      const color = colorInput.value || "#fff7b1";
-    
-      if (!content) return;
-    
-      const board = document.getElementById("notes-board");
-      const rect = board.getBoundingClientRect();
-      const pos_x = rect.width / 2 - 90;
-      const pos_y = rect.height / 2 - 60;
-    
-      const { error } = await client
-        .from("community_notes")
-        .insert([{ author, content, color, pos_x, pos_y }]);
-    
-      if (error) {
-        console.error(error);
-      } else {
-        // ✅ Clear fields after successful submit
-        authorInput.value = "";
-        contentInput.value = "";
-        colorInput.value = "#fff7b1";
-    
-        // Refresh the board
-        loadNotes();
-      }
-    }
+    const author = document.getElementById("author").value || "Anonymous";
+    const content = document.getElementById("content").value.trim();
+    const color = document.getElementById("color").value || "#fff7b1";
+    if (!content) return;
+
+    const board = document.getElementById("notes-board");
+    const rect = board.getBoundingClientRect();
+    const pos_x = rect.width / 2 - 90;
+    const pos_y = rect.height / 2 - 60;
+
+    const { data, error } = await client
+      .from("community_notes")
+      .insert([{ author, content, color, pos_x, pos_y }])
+      .select();
+
+    if (error) console.error(error);
+    else loadNotes();
+  }
 
   function makeDraggable(el) {
     if (window.innerWidth <= 768) return; // skip for mobile
@@ -340,12 +339,355 @@
       });
     });
   });
+
+  // 💌 Luliyy's Letter Catch
+  const gameArea = document.getElementById("game-area");
+  const player = document.getElementById("player");
+  const scoreEl = document.getElementById("score");
+  const startBtn = document.getElementById("start-btn");
+
+  // ---- GAME STATE ----
+  let score = 0;
+  let maxScore = 0;
+  let lives = 3;
+  let isPlaying = false;
+  let isPaused = false;
+  let playerX = 50; // percentage
+  let moveLeft = false;
+  let moveRight = false;
+  let moveSpeed = 1.25;
+  let baseFallSpeed = 3500;
+  let difficultyIncrease = 0.98;
+  let spawnInterval = 900;        // starting spawn delay (ms)
+  const spawnDecreaseRate = 0.97; // how much faster spawns get every 10s
+
+  // Combo logic
+  let combo = 0;
+  let comboActive = false;
+  let comboTimeout;
+
+  // --- KEYBOARD CONTROL ---
+  document.addEventListener("keydown", (e) => {
+    if (!isPlaying || isPaused) return;
+    if (e.key.toLowerCase() === "a" || e.key === "ArrowLeft") moveLeft = true;
+    if (e.key.toLowerCase() === "d" || e.key === "ArrowRight") moveRight = true;
+  });
+  document.addEventListener("keyup", (e) => {
+    if (e.key.toLowerCase() === "a" || e.key === "ArrowLeft") moveLeft = false;
+    if (e.key.toLowerCase() === "d" || e.key === "ArrowRight") moveRight = false;
+  });
+
+  // --- SMOOTH MOVEMENT ---
+  function updatePlayerPosition() {
+    if (!isPlaying || isPaused) return;
+    if (moveLeft) playerX -= moveSpeed;
+    if (moveRight) playerX += moveSpeed;
+    playerX = Math.max(0, Math.min(90, playerX));
+    player.style.left = playerX + "%";
+    requestAnimationFrame(updatePlayerPosition);
+  }
+
+  // --- MOUSE/TOUCH MOVE ---
+  function handleMove(e) {
+    if (!isPlaying || isPaused) return;
+    const areaRect = gameArea.getBoundingClientRect();
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    const percent = ((x - areaRect.left) / areaRect.width) * 100;
+    playerX = Math.max(0, Math.min(90, percent));
+    player.style.left = playerX + "%";
+  }
+  gameArea.addEventListener("mousemove", handleMove);
+  gameArea.addEventListener("touchmove", handleMove);
+
+  // --- LIVES DISPLAY (Top-right inside game area) ---
+  const livesDisplay = document.createElement("div");
+  livesDisplay.classList.add("lives-display");
+  gameArea.appendChild(livesDisplay);
+  function updateLives() {
+    livesDisplay.innerHTML = "❤️".repeat(lives) + "🤍".repeat(3 - lives);
+  }
+  updateLives();
+
+  // --- GAME OVER SCREEN ---
+  const gameOverScreen = document.createElement("div");
+  gameOverScreen.classList.add("game-over-screen");
+  gameOverScreen.innerHTML = `
+    <div class="game-over-content">
+      <img src="images/gameover.jpg" alt="Game Over" class="game-over-img">
+      <h2>Game Over!</h2>
+      <p>Your Score: <span id="final-score">0</span></p>
+      <p>Best: <span id="max-score">0</span></p>
+      <button id="retry-btn">Play Again 💌</button>
+    </div>
+  `;
+  document.getElementById("game-section").appendChild(gameOverScreen);
+  gameOverScreen.style.display = "none";
+  document.getElementById("retry-btn").addEventListener("click", startGame);
+
+  // --- ACTIVE FALLING ITEMS LIST ---
+  let activeItems = [];
+
+  // --- SPAWN ITEMS ---
+  function spawnItem() {
+    const rand = Math.random();
+    const item = document.createElement("div");
+    item.classList.add("falling-item");
+
+    if (rand < 0.08) {
+      item.innerHTML = "🍋";
+      item.dataset.type = "lemon";
+    } else if (rand < 0.2) {
+      const img = document.createElement("img");
+      img.src = "images/Ameno.png";
+      img.alt = "Danger";
+      img.classList.add("fall-img");
+      item.appendChild(img);
+      item.dataset.type = "danger";
+    } else if (rand < 0.28) {
+      const img = document.createElement("img");
+      img.src = "images/sunday.webp";
+      img.alt = "Gift";
+      img.classList.add("fall-img");
+      item.appendChild(img);
+      item.dataset.type = "gift";
+    } else {
+      item.innerHTML = "💌";
+      item.dataset.type = "letter";
+    }
+
+    item.style.left = Math.random() * 90 + "%";
+    gameArea.appendChild(item);
+    activeItems.push({ el: item, start: Date.now(), pausedAt: 0 });
+    fall(item);
+  }
+
+  // --- FALLING ITEMS ANIMATION ---
+  function fall(item) {
+    const itemData = activeItems.find((i) => i.el === item);
+    const rotateDir = Math.random() < 0.5 ? -1 : 1;
+    const rotateSpeed = 0.1 + Math.random() * 0.1;
+    const fallSpeed = baseFallSpeed;
+
+    let animationId;
+
+    function frame() {
+      // if overall game stopped, remove the item and cancel
+      if (!isPlaying) {
+        cancelAnimationFrame(animationId);
+        item.remove();
+        activeItems = activeItems.filter((i) => i.el !== item);
+        return;
+      }
+
+      // if paused: set pausedAt only if not already set, then keep looping
+      if (isPaused) {
+        if (!itemData.pausedAt) {
+          itemData.pausedAt = Date.now();
+        }
+        animationId = requestAnimationFrame(frame);
+        return;
+      }
+
+      // normal playing: if pausedAt existed (we just resumed), shift start forward
+      if (itemData.pausedAt) {
+        const pausedDuration = Date.now() - itemData.pausedAt;
+        itemData.start += pausedDuration;
+        itemData.pausedAt = 0;
+      }
+
+      const elapsed = Date.now() - itemData.start;
+      const progress = elapsed / fallSpeed;
+      const top = progress * 600;
+      item.style.top = top + "px";
+      item.style.transform = `rotate(${elapsed * rotateSpeed * rotateDir}deg)`;
+
+      const playerRect = player.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      const hitbox = {
+        left: playerRect.left + playerRect.width * 0.15,
+        right: playerRect.right - playerRect.width * 0.15,
+        top: playerRect.top + playerRect.height * 0.2,
+        bottom: playerRect.bottom - playerRect.height * 0.1
+      };
+
+      if (
+        itemRect.bottom >= hitbox.top &&
+        itemRect.top <= hitbox.bottom &&
+        itemRect.right >= hitbox.left &&
+        itemRect.left <= hitbox.right
+      ) {
+        handleCatch(item.dataset.type);
+        item.remove();
+        activeItems = activeItems.filter((i) => i.el !== item);
+        return;
+      }
+
+      if (progress >= 1) {
+        handleMiss(item.dataset.type);
+        item.remove();
+        activeItems = activeItems.filter((i) => i.el !== item);
+        return;
+      }
+
+      animationId = requestAnimationFrame(frame);
+    }
+
+    animationId = requestAnimationFrame(frame);
+  }
+
+  // --- HANDLE CATCH ---
+  function handleCatch(type) {
+    if (type === "letter") {
+      score += comboActive ? 2 : 1;
+      combo++;
+    } else if (type === "gift") {
+      score += comboActive ? 10 : 5;
+      combo++;
+    } else if (type === "lemon") {
+      if (lives < 3) {
+        lives = Math.min(3, lives + 1);
+      } else {
+        score += comboActive ? 6 : 3; // 🍋 gives points if already full HP
+      }
+      combo++;
+    } else if (type === "danger") {
+      lives--;
+      combo = 0;
+    }
+    if (combo >= 5 && !comboActive) activateCombo();
+
+    updateLives();
+    scoreEl.textContent = score;
+    checkGameOver();
+  }
+
+  // --- HANDLE MISS ---
+  function handleMiss(type) {
+    if (type === "letter" || type === "gift" || type === "lemon") {
+      lives--;
+      combo = 0;
+      updateLives();
+      checkGameOver();
+    }
+  }
+
+  // --- COMBO BONUS ---
+  function activateCombo() {
+    comboActive = true;
+    const comboText = document.createElement("div");
+    comboText.classList.add("combo-text");
+    comboText.textContent = "🔥 Combo x2!";
+    document.getElementById("game-section").appendChild(comboText);
+    setTimeout(() => comboText.remove(), 2000);
+    clearTimeout(comboTimeout);
+    comboTimeout = setTimeout(() => {
+      comboActive = false;
+      combo = 0;
+    }, 5000);
+  }
+
+  // --- START / PAUSE / RESUME / STOP ---
+  let gameInterval;
+  let speedUpInterval;
+
+  function startGame() {
+    if (!isPlaying) {
+      isPlaying = true;
+      isPaused = false;
+      score = 0;
+      lives = 3;
+      combo = 0;
+      comboActive = false;
+      baseFallSpeed = 3500;
+      spawnInterval = 900; // reset spawn speed
+      gameOverScreen.style.display = "none";
+      scoreEl.textContent = score;
+      updateLives();
+      playerX = 50;
+      player.style.left = playerX + "%";
+      startBtn.textContent = "⏸ Pause";
+
+      requestAnimationFrame(updatePlayerPosition);
+      spawnLoop(); // 🔁 start adaptive spawning
+
+      const speedUp = setInterval(() => {
+        if (!isPlaying) return clearInterval(speedUp);
+        baseFallSpeed *= difficultyIncrease;
+        spawnInterval *= spawnDecreaseRate; // 💨 faster spawns
+        if (spawnInterval < 300) spawnInterval = 300; // cap at 300 ms
+      }, 10000);
+    } else if (isPaused) {
+      resumeGame();
+    } else {
+      pauseGame();
+    }
+  }
+
+  function spawnLoop() {
+    if (!isPlaying || isPaused) return;
+    spawnItem();
+    setTimeout(spawnLoop, spawnInterval);
+  }
+
+  function pauseGame() {
+    if (!isPlaying || isPaused) return;
+    isPaused = true;
+    clearInterval(gameInterval); // stop spawning new items
+
+    // mark pause start for items that don't already have it
+    const now = Date.now();
+    activeItems.forEach(i => {
+      if (!i.pausedAt) i.pausedAt = now;
+    });
+
+    startBtn.textContent = "▶ Resume";
+  }
+
+  function resumeGame() {
+    if (!isPlaying || !isPaused) return;
+    isPaused = false;
+    startBtn.textContent = "⏸ Pause";
+
+    // shift every item's start forward by how long it was paused
+    const now = Date.now();
+    activeItems.forEach(i => {
+      if (i.pausedAt) {
+        const pausedDuration = now - i.pausedAt;
+        i.start += pausedDuration;
+        i.pausedAt = 0;
+      }
+    });
+
+    // resume spawning and player movement
+    gameInterval = setInterval(spawnItem, 900);
+    requestAnimationFrame(updatePlayerPosition);
+  }
+
+  function checkGameOver() {
+    if (lives <= 0) stopGame();
+  }
+
+  function stopGame() {
+    isPlaying = false;
+    isPaused = false;
+    clearInterval(gameInterval);
+    clearInterval(speedUpInterval);
+    activeItems.forEach((i) => i.el.remove());
+    activeItems = [];
+    moveLeft = moveRight = false;
+    startBtn.textContent = "Play Again 💌";
+
+    if (score > maxScore) maxScore = score;
+    document.getElementById("final-score").textContent = score;
+    document.getElementById("max-score").textContent = maxScore;
+    gameOverScreen.style.display = "flex";
+  }
+
+  startBtn.addEventListener("click", startGame);
   </script>
 
     <footer>
       <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
     </footer>
 </body>
-
 </html>
-
