@@ -34,11 +34,11 @@
       <div class="tab-divider">
         <button class="tab-btn active" data-tab="fanart">🎨 Fanart</button>
         <button class="tab-btn" data-tab="notes">📝 Sticky Notes</button>
+        <button class="tab-btn" data-tab="review">⭐ HSR Review</button>
         <button class="tab-btn" data-tab="game">💌 Mini Game</button>
         <div class="tab-underline"></div>
       </div>  
 
-      <!-- FANART SECTION -->
       <div id="tab-fanart" class="tab-content active">
         <section class="fanart-board" id="fanart-board"></section>
       </div>
@@ -63,9 +63,24 @@
         </section>
       </div>
 
+      <div id="tab-review" class="tab-content">
+        <section class="review-section">
+          <h2>⭐ HSR Account Review Request</h2>
+          <form class="review-form" onsubmit="event.preventDefault(); submitReview();">
+            <input type="text" id="tiktok-username" placeholder="TikTok Username *" required>
+            <input type="text" id="hsr-uid" placeholder="HSR UID *" required pattern="[0-9]+" title="Please enter numbers only">
+            <input type="text" id="character-select" placeholder="Character that want to be reviewed *" required>
+            <textarea id="additional-notes" placeholder="Additional notes (optional)" rows="4"></textarea>
+            <button type="submit" id="review-submit-btn">Submit Request ⭐</button>
+          </form>
+          <div class="success-message" id="review-success">✅ Request submitted successfully!</div>
+          <div class="error-message" id="review-error">❌ Something went wrong. Please try again.</div>
+        </section>
+      </div>
+
       <div id="tab-game" class="tab-content">
         <section id="game-section">
-          <h2>💌 Luliyy’s Letter Catch</h2>
+          <h2>💌 Luliyy's Letter Catch</h2>
           <div id="game-area">
             <img id="player" src="images/luliyy.png" alt="Player">
           </div>
@@ -93,7 +108,6 @@
       const bgColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
       const pinColor = pinColors[Math.floor(Math.random() * pinColors.length)];
 
-      // Build deep Discord link
       let jump = f.jump_url || "";
       let deepLink = jump;
       const match = jump.match(/discord\.com\/channels\/(\d+)\/(\d+)\/(\d+)/);
@@ -101,7 +115,6 @@
         deepLink = `discord://-/channels/${match[1]}/${match[2]}/${match[3]}`;
       }
 
-      // Image gallery HTML
       const slidesHTML = f.images.map((img, i) => `
         <div class="slide ${i === 0 ? 'active' : ''}">
           <img src="${img}" alt="Fanart by ${f.author}">
@@ -128,7 +141,6 @@
         </div>`;
     }).join("");
 
-    // --- Enable gallery slide navigation ---
     document.querySelectorAll(".fanart-gallery").forEach((gallery) => {
       const slides = gallery.querySelectorAll(".slide");
       if (slides.length < 2) return;
@@ -156,7 +168,6 @@
       }
     });
 
-    // --- Modal enlarge on image click ---
     const modal = document.createElement("div");
     modal.classList.add("image-modal");
     const modalImg = document.createElement("img");
@@ -181,7 +192,7 @@
 
   loadFanart();
 
-  // nav logic unchanged
+  // NAVIGATION
   document.addEventListener("DOMContentLoaded", () => {
     const navbar = document.querySelector(".navbar");
     window.addEventListener("scroll", () => {
@@ -194,17 +205,17 @@
     hamburger.addEventListener("click", () => navMenu.classList.toggle("show"));
   });
 
+  // SUPABASE SETUP
   const SUPABASE_URL = "https://hawxtrgfskqoyveyathl.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhhd3h0cmdmc2txb3l2ZXlhdGhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDczODMsImV4cCI6MjA3NzQ4MzM4M30.fYinRM_sBeam2W_0Ylg7PezTQNSW0kmLr3X4Ac2S8QQ";
-
   const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  // STICKY NOTES - PERMANENT (NO EXPIRY)
   async function loadNotes() {
     const { data, error } = await client
       .from("community_notes")
       .select("*")
-      .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-      .order("id", { ascending: true }); // 🧠 sort stable for consistent positions
+      .order("id", { ascending: true });
 
     if (error) console.error(error);
     else renderNotes(data);
@@ -249,11 +260,15 @@
       .select();
 
     if (error) console.error(error);
-    else loadNotes();
+    else {
+      document.getElementById("author").value = "";
+      document.getElementById("content").value = "";
+      loadNotes();
+    }
   }
 
   function makeDraggable(el) {
-    if (window.innerWidth <= 768) return; // skip for mobile
+    if (window.innerWidth <= 768) return;
 
     let offsetX, offsetY, isDragging = false;
 
@@ -288,30 +303,67 @@
       const y = parseFloat(el.style.top);
       const id = el.dataset.id;
 
-      console.log("💾 Saving position", { id, x, y });
-
-      const { data, error } = await client
+      const { error } = await client
         .from("community_notes")
         .update({ pos_x: x, pos_y: y })
-        .eq("id", id)
-        .select();
+        .eq("id", id);
 
-      if (error) console.error("❌ Position save failed:", error);
-      else console.log("✅ Saved to DB:", data);
+      if (error) console.error("Position save failed:", error);
     });
   }
 
-  // ✅ Realtime listener
   client
     .channel('public:community_notes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'community_notes' }, payload => {
-      console.log('Realtime change detected:', payload);
       loadNotes();
     })
     .subscribe();
 
-  // ✅ Initial load
   loadNotes();
+
+  async function submitReview() {
+    const tiktokUsername = document.getElementById("tiktok-username").value.trim();
+    const hsrUid = document.getElementById("hsr-uid").value.trim();
+    const character = document.getElementById("character-select").value.trim();
+    const additionalNotes = document.getElementById("additional-notes").value.trim();
+    const submitBtn = document.getElementById("review-submit-btn");
+    const successMsg = document.getElementById("review-success");
+    const errorMsg = document.getElementById("review-error");
+
+    if (!tiktokUsername || !hsrUid || !character) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+    successMsg.style.display = "none";
+    errorMsg.style.display = "none";
+
+    const { data, error } = await client
+      .from("hsr_review_requests")
+      .insert([{
+        tiktok_username: tiktokUsername,
+        hsr_uid: hsrUid,
+        character: character,
+        additional_notes: additionalNotes,
+        status: "pending"
+      }])
+      .select();
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Request ⭐";
+
+    if (error) {
+      console.error("Review submission error:", error);
+      errorMsg.style.display = "block";
+      setTimeout(() => errorMsg.style.display = "none", 5000);
+    } else {
+      successMsg.style.display = "block";
+      document.getElementById("tiktok-username").value = "";
+      document.getElementById("hsr-uid").value = "";
+      document.getElementById("character-select").value = "";
+      document.getElementById("additional-notes").value = "";
+      setTimeout(() => successMsg.style.display = "none", 5000);
+    }
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
     const tabs = document.querySelectorAll(".tab-btn");
@@ -325,48 +377,56 @@
       underline.style.width = `${rect.width}px`;
     }
 
-    // Initial position
-    const activeTab = document.querySelector(".tab-btn.active");
-    if (activeTab) moveUnderline(activeTab);
+    function switchTab(tabName) {
+      tabs.forEach(t => t.classList.remove("active"));
+      contents.forEach(c => c.classList.remove("active"));
+      const targetTab = document.querySelector(`[data-tab="${tabName}"]`);
+      if (targetTab) {
+        targetTab.classList.add("active");
+        document.getElementById(`tab-${tabName}`).classList.add("active");
+        moveUnderline(targetTab);
+      }
+    }
+
+    // Check if URL has hash for direct navigation
+    if (window.location.hash === '#review') {
+      switchTab('review');
+    } else {
+      const activeTab = document.querySelector(".tab-btn.active");
+      if (activeTab) moveUnderline(activeTab);
+    }
 
     tabs.forEach(tab => {
       tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active"));
-        contents.forEach(c => c.classList.remove("active"));
-        tab.classList.add("active");
-        document.getElementById(`tab-${tab.dataset.tab}`).classList.add("active");
-        moveUnderline(tab);
+        switchTab(tab.dataset.tab);
       });
     });
   });
 
-  // 💌 Luliyy's Letter Catch
+  // GAME CODE (unchanged)
   const gameArea = document.getElementById("game-area");
   const player = document.getElementById("player");
   const scoreEl = document.getElementById("score");
   const startBtn = document.getElementById("start-btn");
 
-  // ---- GAME STATE ----
   let score = 0;
   let maxScore = 0;
   let lives = 3;
   let isPlaying = false;
   let isPaused = false;
-  let playerX = 50; // percentage
+  let playerX = 50;
   let moveLeft = false;
   let moveRight = false;
   let moveSpeed = 1.25;
   let baseFallSpeed = 3500;
   let difficultyIncrease = 0.98;
-  let spawnInterval = 900;        // starting spawn delay (ms)
-  const spawnDecreaseRate = 0.97; // how much faster spawns get every 10s
+  let spawnInterval = 900;
+  const spawnDecreaseRate = 0.97;
 
-  // Combo logic
   let combo = 0;
   let comboActive = false;
   let comboTimeout;
 
-  // --- KEYBOARD CONTROL ---
   document.addEventListener("keydown", (e) => {
     if (!isPlaying || isPaused) return;
     if (e.key.toLowerCase() === "a" || e.key === "ArrowLeft") moveLeft = true;
@@ -377,7 +437,6 @@
     if (e.key.toLowerCase() === "d" || e.key === "ArrowRight") moveRight = false;
   });
 
-  // --- SMOOTH MOVEMENT ---
   function updatePlayerPosition() {
     if (!isPlaying || isPaused) return;
     if (moveLeft) playerX -= moveSpeed;
@@ -387,7 +446,6 @@
     requestAnimationFrame(updatePlayerPosition);
   }
 
-  // --- MOUSE/TOUCH MOVE ---
   function handleMove(e) {
     if (!isPlaying || isPaused) return;
     const areaRect = gameArea.getBoundingClientRect();
@@ -399,7 +457,6 @@
   gameArea.addEventListener("mousemove", handleMove);
   gameArea.addEventListener("touchmove", handleMove);
 
-  // --- LIVES DISPLAY (Top-right inside game area) ---
   const livesDisplay = document.createElement("div");
   livesDisplay.classList.add("lives-display");
   gameArea.appendChild(livesDisplay);
@@ -408,7 +465,6 @@
   }
   updateLives();
 
-  // --- GAME OVER SCREEN ---
   const gameOverScreen = document.createElement("div");
   gameOverScreen.classList.add("game-over-screen");
   gameOverScreen.innerHTML = `
@@ -424,10 +480,8 @@
   gameOverScreen.style.display = "none";
   document.getElementById("retry-btn").addEventListener("click", startGame);
 
-  // --- ACTIVE FALLING ITEMS LIST ---
   let activeItems = [];
 
-  // --- SPAWN ITEMS ---
   function spawnItem() {
     const rand = Math.random();
     const item = document.createElement("div");
@@ -461,7 +515,6 @@
     fall(item);
   }
 
-  // --- FALLING ITEMS ANIMATION ---
   function fall(item) {
     const itemData = activeItems.find((i) => i.el === item);
     const rotateDir = Math.random() < 0.5 ? -1 : 1;
@@ -471,7 +524,6 @@
     let animationId;
 
     function frame() {
-      // if overall game stopped, remove the item and cancel
       if (!isPlaying) {
         cancelAnimationFrame(animationId);
         item.remove();
@@ -479,7 +531,6 @@
         return;
       }
 
-      // if paused: set pausedAt only if not already set, then keep looping
       if (isPaused) {
         if (!itemData.pausedAt) {
           itemData.pausedAt = Date.now();
@@ -488,7 +539,6 @@
         return;
       }
 
-      // normal playing: if pausedAt existed (we just resumed), shift start forward
       if (itemData.pausedAt) {
         const pausedDuration = Date.now() - itemData.pausedAt;
         itemData.start += pausedDuration;
@@ -535,7 +585,6 @@
     animationId = requestAnimationFrame(frame);
   }
 
-  // --- HANDLE CATCH ---
   function handleCatch(type) {
     if (type === "letter") {
       score += comboActive ? 2 : 1;
@@ -547,7 +596,7 @@
       if (lives < 3) {
         lives = Math.min(3, lives + 1);
       } else {
-        score += comboActive ? 6 : 3; // 🍋 gives points if already full HP
+        score += comboActive ? 6 : 3;
       }
       combo++;
     } else if (type === "danger") {
@@ -561,7 +610,6 @@
     checkGameOver();
   }
 
-  // --- HANDLE MISS ---
   function handleMiss(type) {
     if (type === "letter" || type === "gift" || type === "lemon") {
       lives--;
@@ -571,7 +619,6 @@
     }
   }
 
-  // --- COMBO BONUS ---
   function activateCombo() {
     comboActive = true;
     const comboText = document.createElement("div");
@@ -586,7 +633,6 @@
     }, 5000);
   }
 
-  // --- START / PAUSE / RESUME / STOP ---
   let gameInterval;
   let speedUpInterval;
 
@@ -599,7 +645,7 @@
       combo = 0;
       comboActive = false;
       baseFallSpeed = 3500;
-      spawnInterval = 900; // reset spawn speed
+      spawnInterval = 900;
       gameOverScreen.style.display = "none";
       scoreEl.textContent = score;
       updateLives();
@@ -608,13 +654,13 @@
       startBtn.textContent = "⏸ Pause";
 
       requestAnimationFrame(updatePlayerPosition);
-      spawnLoop(); // 🔁 start adaptive spawning
+      spawnLoop();
 
-      const speedUp = setInterval(() => {
-        if (!isPlaying) return clearInterval(speedUp);
+      speedUpInterval = setInterval(() => {
+        if (!isPlaying) return clearInterval(speedUpInterval);
         baseFallSpeed *= difficultyIncrease;
-        spawnInterval *= spawnDecreaseRate; // 💨 faster spawns
-        if (spawnInterval < 300) spawnInterval = 300; // cap at 300 ms
+        spawnInterval *= spawnDecreaseRate;
+        if (spawnInterval < 300) spawnInterval = 300;
       }, 10000);
     } else if (isPaused) {
       resumeGame();
@@ -632,9 +678,8 @@
   function pauseGame() {
     if (!isPlaying || isPaused) return;
     isPaused = true;
-    clearInterval(gameInterval); // stop spawning new items
+    clearInterval(gameInterval);
 
-    // mark pause start for items that don't already have it
     const now = Date.now();
     activeItems.forEach(i => {
       if (!i.pausedAt) i.pausedAt = now;
@@ -648,7 +693,6 @@
     isPaused = false;
     startBtn.textContent = "⏸ Pause";
 
-    // shift every item's start forward by how long it was paused
     const now = Date.now();
     activeItems.forEach(i => {
       if (i.pausedAt) {
@@ -658,7 +702,6 @@
       }
     });
 
-    // resume spawning and player movement
     gameInterval = setInterval(spawnItem, 900);
     requestAnimationFrame(updatePlayerPosition);
   }
