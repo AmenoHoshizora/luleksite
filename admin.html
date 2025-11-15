@@ -156,30 +156,6 @@
             box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
         }
 
-        .toggle-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 200px !important;
-            justify-content: center;
-        }
-
-        .toggle-btn.enabled {
-            background: linear-gradient(135deg, #a8e6cf, #56cc9d) !important;
-        }
-
-        .toggle-btn.enabled:hover {
-            background: linear-gradient(135deg, #56cc9d, #3db87c) !important;
-        }
-
-        .toggle-btn.disabled {
-            background: linear-gradient(135deg, #ffb3ba, #ff8a95) !important;
-        }
-
-        .toggle-btn.disabled:hover {
-            background: linear-gradient(135deg, #ff8a95, #ff5c6c) !important;
-        }
-
         .requests-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -289,6 +265,50 @@
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
             transition: all 0.3s;
+        }
+
+        /* Toggle Submissions Button */
+        .toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.8rem 1.6rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(255, 182, 249, 0.35);
+            margin-top: 1.2rem;
+        }
+
+        /* When submissions are OPEN */
+        .toggle-btn.enabled {
+            background: linear-gradient(135deg, #a8e6cf, #56cc9d);
+            color: white;
+        }
+
+        .toggle-btn.enabled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(86, 204, 157, 0.4);
+        }
+
+        /* When submissions are CLOSED */
+        .toggle-btn.disabled {
+            background: linear-gradient(135deg, #ffb3ba, #ff8a95);
+            color: white;
+        }
+
+        .toggle-btn.disabled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 138, 149, 0.4);
+        }
+
+        /* Icon spacing fix */
+        #toggle-icon {
+            font-size: 1.3rem;
         }
 
         .btn-complete {
@@ -404,8 +424,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⭐ HSR Review Admin Panel</h1>
+            <h1>HSR Review Admin Panel</h1>
             <p>Manage account review requests</p>
+            <button id="toggle-submissions" class="toggle-btn" onclick="toggleSubmissions()">
+                <span id="toggle-icon">🔒</span>
+                <span id="toggle-text">Submissions Closed</span>
+            </button>
         </div>
 
         <div class="stats">
@@ -430,7 +454,7 @@
                 <option value="completed">Completed Only</option>
             </select>
             <input type="text" id="search-input" placeholder="Search by TikTok username or character...">
-            <button onclick="loadRequests()">🔄 Refresh</button>
+            <button onclick="loadRequests()">Refresh</button>
         </div>
 
         <div id="requests-container" class="loading"></div>
@@ -558,7 +582,7 @@
                 container.className = "";
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h2>📭 No Requests Found</h2>
+                        <h2>No Requests Found</h2>
                         <p>There are no review requests matching your filters.</p>
                     </div>
                 `;
@@ -579,23 +603,23 @@
                     <span class="status-badge ${request.status}">${request.status}</span>
                     
                     <div class="request-header">
-                        <h3>🎮 ${request.character}</h3>
+                        <h3>@${request.tiktok_username}</h3>
                     </div>
 
                     <div class="request-info">
                         <div class="info-row">
-                            <span class="info-label">TikTok:</span>
-                            <span class="info-value">@${request.tiktok_username}</span>
-                        </div>
-                        <div class="info-row">
                             <span class="info-label">HSR UID:</span>
                             <span class="info-value">${request.hsr_uid}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Character:</span>
+                            <span class="info-value">${request.character}</span>
                         </div>
                     </div>
 
                     ${request.additional_notes ? `
                         <div class="additional-notes">
-                            📝 ${request.additional_notes}
+                             ${request.additional_notes}
                         </div>
                     ` : ''}
 
@@ -606,15 +630,15 @@
                     <div class="request-actions">
                         ${!isCompleted ? `
                             <button class="btn-complete" onclick="markAsCompleted(${request.id})">
-                                ✅ Mark Done
+                                 Mark Done
                             </button>
                         ` : `
                             <button class="btn-undo" onclick="markAsPending(${request.id})">
-                                ↩️ Undo
+                                 Undo
                             </button>
                         `}
                         <button class="btn-delete" onclick="deleteRequest(${request.id})">
-                            🗑️ Delete
+                             Delete
                         </button>
                     </div>
                 </div>
