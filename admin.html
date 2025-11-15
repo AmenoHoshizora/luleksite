@@ -156,6 +156,30 @@
             box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
         }
 
+        .toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 200px !important;
+            justify-content: center;
+        }
+
+        .toggle-btn.enabled {
+            background: linear-gradient(135deg, #a8e6cf, #56cc9d) !important;
+        }
+
+        .toggle-btn.enabled:hover {
+            background: linear-gradient(135deg, #56cc9d, #3db87c) !important;
+        }
+
+        .toggle-btn.disabled {
+            background: linear-gradient(135deg, #ffb3ba, #ff8a95) !important;
+        }
+
+        .toggle-btn.disabled:hover {
+            background: linear-gradient(135deg, #ff8a95, #ff5c6c) !important;
+        }
+
         .requests-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -380,7 +404,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>HSR Review Admin Panel</h1>
+            <h1>⭐ HSR Review Admin Panel</h1>
             <p>Manage account review requests</p>
         </div>
 
@@ -406,7 +430,7 @@
                 <option value="completed">Completed Only</option>
             </select>
             <input type="text" id="search-input" placeholder="Search by TikTok username or character...">
-            <button onclick="loadRequests()">Refresh</button>
+            <button onclick="loadRequests()">🔄 Refresh</button>
         </div>
 
         <div id="requests-container" class="loading"></div>
@@ -419,6 +443,57 @@
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let allRequests = [];
+        let submissionsEnabled = true;
+
+        async function loadSettings() {
+            const { data, error } = await client
+                .from("review_settings")
+                .select("*")
+                .eq("id", 1)
+                .single();
+
+            if (error) {
+                console.error("Error loading settings:", error);
+                return;
+            }
+
+            submissionsEnabled = data.submissions_enabled;
+            updateToggleButton();
+        }
+
+        function updateToggleButton() {
+            const btn = document.getElementById("toggle-submissions");
+            const icon = document.getElementById("toggle-icon");
+            const text = document.getElementById("toggle-text");
+
+            if (submissionsEnabled) {
+                btn.className = "toggle-btn enabled";
+                icon.textContent = "✅";
+                text.textContent = "Submissions Open";
+            } else {
+                btn.className = "toggle-btn disabled";
+                icon.textContent = "🔒";
+                text.textContent = "Submissions Closed";
+            }
+        }
+
+        async function toggleSubmissions() {
+            const newState = !submissionsEnabled;
+            
+            const { error } = await client
+                .from("review_settings")
+                .update({ submissions_enabled: newState })
+                .eq("id", 1);
+
+            if (error) {
+                console.error("Error updating settings:", error);
+                alert("Failed to update submission settings");
+            } else {
+                submissionsEnabled = newState;
+                updateToggleButton();
+                alert(newState ? "✅ Review submissions are now OPEN" : "🔒 Review submissions are now CLOSED");
+            }
+        }
 
         async function loadRequests() {
             const container = document.getElementById("requests-container");
@@ -504,17 +579,17 @@
                     <span class="status-badge ${request.status}">${request.status}</span>
                     
                     <div class="request-header">
-                        <h3>@${request.tiktok_username}</h3>
+                        <h3>🎮 ${request.character}</h3>
                     </div>
 
                     <div class="request-info">
                         <div class="info-row">
-                            <span class="info-label">HSR UID:</span>
-                            <span class="info-value">${request.hsr_uid}</span>
+                            <span class="info-label">TikTok:</span>
+                            <span class="info-value">@${request.tiktok_username}</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">Character:</span>
-                            <span class="info-value">${request.character}</span>
+                            <span class="info-label">HSR UID:</span>
+                            <span class="info-value">${request.hsr_uid}</span>
                         </div>
                     </div>
 
@@ -531,15 +606,15 @@
                     <div class="request-actions">
                         ${!isCompleted ? `
                             <button class="btn-complete" onclick="markAsCompleted(${request.id})">
-                                 Mark Done
+                                ✅ Mark Done
                             </button>
                         ` : `
                             <button class="btn-undo" onclick="markAsPending(${request.id})">
-                                 Undo
+                                ↩️ Undo
                             </button>
                         `}
                         <button class="btn-delete" onclick="deleteRequest(${request.id})">
-                             Delete
+                            🗑️ Delete
                         </button>
                     </div>
                 </div>
@@ -607,6 +682,20 @@
         document.getElementById("filter-status").addEventListener("change", filterAndDisplayRequests);
         document.getElementById("search-input").addEventListener("input", filterAndDisplayRequests);
 
+        // Subscribe to settings changes
+        client
+            .channel('public:review_settings')
+            .on('postgres_changes', { 
+                event: '*', 
+                schema: 'public', 
+                table: 'review_settings' 
+            }, payload => {
+                console.log('Settings change detected:', payload);
+                loadSettings();
+            })
+            .subscribe();
+
+        loadSettings();
         loadRequests();
     </script>
 </body>
