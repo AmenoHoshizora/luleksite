@@ -1,613 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSR Review Admin Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: "Poppins", "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #b3e5fc, #ffc1e3);
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-            background-attachment: fixed;
-            background-size: cover;
-            animation: bgShift 15s ease infinite alternate;
-        }
-
-        @keyframes bgShift {
-            0%   { background: linear-gradient(135deg, #b3e5fc, #ffc1e3); }
-            100% { background: linear-gradient(135deg, #c5e1ff, #ffb6f9); }
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2rem;
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-            margin-bottom: 2rem;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .header:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(255, 182, 249, 0.35);
-        }
-
-        .header h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, #4dc7ff, #fb6ebc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 35px rgba(255, 182, 249, 0.45);
-        }
-
-        .stat-card h3 {
-            color: #999;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .stat-card .number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(90deg, #4dc7ff, #fb6ebc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .controls {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .controls select,
-        .controls input {
-            padding: 0.8rem;
-            border: 2px solid #ffd4e5;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-family: 'Poppins', sans-serif;
-            flex: 1;
-            min-width: 200px;
-            transition: border-color 0.3s;
-        }
-
-        .controls select:focus,
-        .controls input:focus {
-            outline: none;
-            border-color: #ff69b4;
-            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
-        }
-
-        .controls button {
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(135deg, #ff8ec9, #ff6fb2);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .controls button:hover {
-            background: linear-gradient(135deg, #ff5fa7, #ff83c6);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
-        }
-
-        .requests-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .request-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 18px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-        }
-
-        .request-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 35px rgba(255, 182, 249, 0.45);
-        }
-
-        .request-card.completed {
-            opacity: 0.7;
-            background: rgba(248, 249, 250, 0.95);
-        }
-
-        .status-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .status-badge.pending {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            color: #856404;
-        }
-
-        .status-badge.completed {
-            background: linear-gradient(135deg, #d4edda, #a8e6cf);
-            color: #155724;
-        }
-
-        .request-header {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(255, 182, 249, 0.2);
-        }
-
-        .request-header h3 {
-            color: #ff7eb3;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-
-        .request-info {
-            display: grid;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .info-row {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #ff7eb3;
-            min-width: 100px;
-        }
-
-        .info-value {
-            color: #555;
-            font-weight: 500;
-        }
-
-        .additional-notes {
-            background: rgba(255, 247, 252, 0.8);
-            padding: 1rem;
-            border-radius: 10px;
-            margin: 1rem 0;
-            font-style: italic;
-            color: #666;
-            border-left: 3px solid #ffb6d9;
-        }
-
-        .request-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .request-actions button {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s;
-        }
-
-        .btn-complete {
-            background: linear-gradient(135deg, #a8e6cf, #56cc9d);
-            color: white;
-        }
-
-        .btn-complete:hover {
-            background: linear-gradient(135deg, #56cc9d, #3db87c);
-            transform: translateY(-2px);
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, #ffb3ba, #ff8a95);
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: linear-gradient(135deg, #ff8a95, #ff5c6c);
-            transform: translateY(-2px);
-        }
-
-        .btn-undo {
-            background: linear-gradient(135deg, #ffe6a7, #ffd966);
-            color: #000;
-        }
-
-        .btn-undo:hover {
-            background: linear-gradient(135deg, #ffd966, #ffcc33);
-            transform: translateY(-2px);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 18px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .empty-state h2 {
-            font-family: 'Pacifico', cursive;
-            background: linear-gradient(90deg, #4dc7ff, #fb6ebc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state p {
-            color: #666;
-            font-size: 1.2rem;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 18px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .loading::after {
-            content: '⏳';
-            font-size: 3rem;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .timestamp {
-            font-size: 0.85rem;
-            color: #999;
-            margin-top: 0.5rem;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .controls select,
-            .controls input {
-                width: 100%;
-                min-width: 0;
-            }
-
-            .requests-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700&family=Poppins:wght@500&display=swap" rel="stylesheet">
+  <title>LuliyyKitty's Hub</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>⭐ HSR Review Admin Panel</h1>
-            <p>Manage account review requests</p>
-        </div>
+  <header>
+    <nav class="navbar">
+      <a href="https://hololist.net/luliyy-kitty" class="nav-badge" target="_blank">
+        <img src="hololist.png" alt="Logo">
+        <span>Check out my Hololist page!</span>
+      </a>
 
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Total Requests</h3>
-                <div class="number" id="total-count">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Pending</h3>
-                <div class="number" id="pending-count">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Completed</h3>
-                <div class="number" id="completed-count">0</div>
-            </div>
-        </div>
+      <ul class="nav-links">
+        <li><a class="active" href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
 
-        <div class="controls">
-            <select id="filter-status">
-                <option value="all">All Requests</option>
-                <option value="pending" selected>Pending Only</option>
-                <option value="completed">Completed Only</option>
-            </select>
-            <input type="text" id="search-input" placeholder="Search by TikTok username or character...">
-            <button onclick="loadRequests()">🔄 Refresh</button>
-        </div>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+  </header>
 
-        <div id="requests-container" class="loading"></div>
+  <!-- Review Promo Button -->
+  <div class="review-promo">
+    <a href="community.html#review" class="review-promo-btn">
+      <span class="review-promo-icon">⭐</span>
+      <span>Want character review? Click here!</span>
+    </a>
+  </div>
+
+  <header>
+    <img id="header-img" src="luwek.png" height="400" width="400">
+  </header>
+
+  <div class="parallax-hero" id="about-hero">
+    <div class="parallax-bg"></div>
+    <div class="about-text" id="about-text">
+      <h2>Luliyy Kitty</h2>
+      <p>
+        .ೃ࿐ Hi haii~ Welcome to my website!~ ✨  
+        I'm <strong>Luliyy Kitty</strong>, a <em>magical girl deliverer</em> who can send love messages between life and death. 💫 ๋࣭⭑
+      </p>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = "https://hawxtrgfskqoyveyathl.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhhd3h0cmdmc2txb3l2ZXlhdGhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDczODMsImV4cCI6MjA3NzQ4MzM4M30.fYinRM_sBeam2W_0Ylg7PezTQNSW0kmLr3X4Ac2S8QQ";
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <section id="live-indicator">
+    <span id="live-status">⚫ Currently Offline</span>
+    <a id="live-link" href="https://www.tiktok.com/@luliyykitty/live" target="_blank" style="display:none;">Watch Now</a>
+  </section>
 
-        let allRequests = [];
+  <section class="links">
+    <h2>Find Me Here</h2>
+      <div class="link-buttons">
+        <a href="https://discord.gg/spCF9StKC5" target="_blank" class="social-btn discord" aria-label="Discord">
+          <img src="https://cdn.simpleicons.org/discord/FFFFFF" alt="Discord">
+        </a>
 
-        async function loadRequests() {
-            const container = document.getElementById("requests-container");
-            container.className = "loading";
+        <a href="https://www.tiktok.com/@luliyykitty" target="_blank" class="social-btn tiktok" aria-label="TikTok">
+          <img src="https://cdn.simpleicons.org/tiktok/FFFFFF" alt="TikTok">
+        </a>
 
-            const { data, error } = await client
-                .from("hsr_review_requests")
-                .select("*")
-                .order("created_at", { ascending: false });
+        <a href="https://www.twitch.tv/luliyykittyy" target="_blank" class="social-btn twitch" aria-label="Twitch">
+          <img src="https://cdn.simpleicons.org/twitch/FFFFFF" alt="Twitch">
+        </a>
 
-            if (error) {
-                console.error("Error loading requests:", error);
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <h2>❌ Error Loading Requests</h2>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-                return;
-            }
+        <a href="https://www.youtube.com/@luliiyyye" target="_blank" class="social-btn youtube" aria-label="YouTube">
+          <img src="https://cdn.simpleicons.org/youtube/FFFFFF" alt="YouTube">
+        </a>
+      </div>
+  </section>
 
-            allRequests = data;
-            updateStats(data);
-            filterAndDisplayRequests();
+  <section class="donation-section">
+    <h2>Support Me</h2>
+    <div class="donation-buttons">
+      <div class="social-container">
+        <a href="https://sociabuzz.com/luliyy/tribe" target="_blank" class="social-btn sociabuzz">
+          <img src="sociabuzz.png" alt="Sociabuzz">
+        </a>
+        <span class="social-text">Sociabuzz</span>
+      </div>
+      <div class="social-container">
+        <a href="https://throne.com/luliyy" target="_blank" class="social-btn throne">
+          <img src="throne.png" alt="Throne">
+        </a>
+        <span class="social-text">Throne</span>
+      </div>
+    </div>
+  </section>
+
+  <button id="toggle-handle" aria-expanded="false">⮜ Online</button>
+
+  <div class="discord-sidebar">
+    <section class="discord-members">
+      <h2>
+        Discord Members Online 
+        <span id="online-count">(0)</span>
+      </h2>
+      <div id="online-members">Loading...</div>
+    </section>
+  </div>
+
+  <script>
+    let clickCount = 0;
+  const headerImg = document.getElementById("header-img");
+
+  headerImg.addEventListener("click", () => {
+    clickCount++;
+    if (clickCount === 8) {
+      startLoveRain();
+      clickCount = 0;
+    }
+  });
+
+  function startLoveRain() {
+    for (let i = 0; i < 60; i++) {
+      setTimeout(() => createLove(), i * 100);
+    }
+  }
+
+  function createLove() {
+    const love = document.createElement("div");
+    love.classList.add("love");
+    love.textContent = "💌";
+
+    let x = Math.random() * window.innerWidth;
+    let y = -50;
+    let vx = (Math.random() - 0.5) * 1.5;
+    let vy = 2 + Math.random() * 2;     
+    let angle = Math.random() * 360;
+    let flutterSpeed = 0.5 + Math.random() * 0.5;
+
+    document.body.appendChild(love);
+
+    let landed = false;
+    let landedTimer = null;
+
+    function animate() {
+      if (!landed) {
+        x += vx;
+        y += vy;
+        angle += Math.sin(y / 25) * flutterSpeed;
+
+        if (vy < 2) vy += 0.1;
+
+        love.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
+
+        if (y >= window.innerHeight - 40) {
+          y = window.innerHeight - 40;
+          landed = true;
+
+          landedTimer = setTimeout(() => {
+            love.style.transition = "opacity 1s";
+            love.style.opacity = "0";
+            setTimeout(() => love.remove(), 1000);
+          }, 4000);
         }
+      }
 
-        function updateStats(data) {
-            const total = data.length;
-            const pending = data.filter(r => r.status === "pending").length;
-            const completed = data.filter(r => r.status === "completed").length;
+      if (!landed) requestAnimationFrame(animate);
+    }
+    animate();
 
-            document.getElementById("total-count").textContent = total;
-            document.getElementById("pending-count").textContent = pending;
-            document.getElementById("completed-count").textContent = completed;
-        }
+    love.addEventListener("mouseenter", () => bounceAway());
+    love.addEventListener("touchstart", () => bounceAway());
 
-        function filterAndDisplayRequests() {
-            const filterStatus = document.getElementById("filter-status").value;
-            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+    function bounceAway() {
+      if (!landed) {
+        vy = -5; 
+      }
+    }
+  }
 
-            let filtered = allRequests;
+    async function loadOnlineMembers() {
+      try {
+        let res = await fetch("https://lulekbot.onrender.com/api/online_members"); 
+        let data = await res.json();
+        let container = document.getElementById("online-members");
+        let countSpan = document.getElementById("online-count");
+        container.innerHTML = "";
 
-            if (filterStatus !== "all") {
-                filtered = filtered.filter(r => r.status === filterStatus);
-            }
+        let totalOnline = 0;
 
-            if (searchTerm) {
-                filtered = filtered.filter(r => 
-                    r.tiktok_username.toLowerCase().includes(searchTerm) ||
-                    r.character.toLowerCase().includes(searchTerm) ||
-                    r.hsr_uid.includes(searchTerm)
-                );
-            }
-
-            displayRequests(filtered);
-        }
-
-        function displayRequests(requests) {
-            const container = document.getElementById("requests-container");
-
-            if (requests.length === 0) {
-                container.className = "";
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <h2>📭 No Requests Found</h2>
-                        <p>There are no review requests matching your filters.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.className = "requests-grid";
-            container.innerHTML = requests.map(request => createRequestCard(request)).join("");
-        }
-
-        function createRequestCard(request) {
-            const date = new Date(request.created_at);
-            const formattedDate = date.toLocaleDateString() + " " + date.toLocaleTimeString();
-            const isCompleted = request.status === "completed";
-
-            return `
-                <div class="request-card ${isCompleted ? 'completed' : ''}">
-                    <span class="status-badge ${request.status}">${request.status}</span>
-                    
-                    <div class="request-header">
-                        <h3>🎮 ${request.character}</h3>
-                    </div>
-
-                    <div class="request-info">
-                        <div class="info-row">
-                            <span class="info-label">TikTok:</span>
-                            <span class="info-value">@${request.tiktok_username}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">HSR UID:</span>
-                            <span class="info-value">${request.hsr_uid}</span>
-                        </div>
-                    </div>
-
-                    ${request.additional_notes ? `
-                        <div class="additional-notes">
-                            📝 ${request.additional_notes}
-                        </div>
-                    ` : ''}
-
-                    <div class="timestamp">
-                        Submitted: ${formattedDate}
-                    </div>
-
-                    <div class="request-actions">
-                        ${!isCompleted ? `
-                            <button class="btn-complete" onclick="markAsCompleted(${request.id})">
-                                ✅ Mark Done
-                            </button>
-                        ` : `
-                            <button class="btn-undo" onclick="markAsPending(${request.id})">
-                                ↩️ Undo
-                            </button>
-                        `}
-                        <button class="btn-delete" onclick="deleteRequest(${request.id})">
-                            🗑️ Delete
-                        </button>
-                    </div>
+        function makeSection(title, members) {
+          let section = document.createElement("div");
+          section.className = "role-section";
+          section.innerHTML = `<h3>${title}</h3>`;
+          if (!members.length) {
+            section.innerHTML += "<p class='empty'>None online</p>";
+          } else {
+            members.forEach(m => {
+              totalOnline++;
+              section.innerHTML += `
+                <div class="member">
+                  <div class="avatar-wrapper">
+                    <img src="${m.avatar}" class="avatar">
+                    <span class="status ${m.status}"></span>
+                  </div>
+                  <span class="name">${m.name}</span>
                 </div>
-            `;
+              `;
+            });
+          }
+          container.appendChild(section);
         }
 
-        async function markAsCompleted(id) {
-            const { error } = await client
-                .from("hsr_review_requests")
-                .update({ status: "completed" })
-                .eq("id", id);
+        makeSection("Sigma", data.owner);
+        makeSection("Skibidis", data.mods);
+        makeSection("Mr Beast", data.donators);
+        makeSection("Yapper Degree", data.yapper);
+        makeSection("Streamer", data.streamer);
+        makeSection("Kitty's", data.subs);
+        makeSection("Rizzlers", data.normal);
 
-            if (error) {
-                console.error("Error updating request:", error);
-                alert("Failed to mark as completed");
-            } else {
-                loadRequests();
-            }
+        countSpan.textContent = `(${totalOnline})`;
+
+      } catch (err) {
+        console.error("Error loading members:", err);
+        document.getElementById("online-members").innerText = "⚠️ Failed to load members.";
+      }
+    }
+
+    loadOnlineMembers();
+    setInterval(loadOnlineMembers, 30000);
+
+    const sidebar = document.querySelector(".discord-sidebar");
+    const toggle = document.getElementById("toggle-handle");
+    const membersPanel = document.querySelector(".discord-members");
+
+    toggle.addEventListener("click", () => {
+      sidebar.classList.toggle("show");
+
+      if (sidebar.classList.contains("show")) {
+        toggle.textContent = "⮞ Close ";
+        membersPanel.scrollTop = 0;
+      } else {
+        toggle.textContent = "⮜ Online";
+      }
+    })
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const hero = document.getElementById("about-hero");
+    const bg   = hero.querySelector(".parallax-bg");
+    const text = document.getElementById("about-text");
+
+    let vh = window.innerHeight || document.documentElement.clientHeight;
+
+    function onScroll(){
+      const rect = hero.getBoundingClientRect();
+
+      const inside = Math.min(Math.max(-rect.top, 0), rect.height);
+      bg.style.transform = `translateY(${inside * 0.4}px)`;
+
+      if (rect.top <= 0 && rect.bottom >= vh){
+        text.classList.add("pinned");
+      } else {
+        text.classList.remove("pinned");
+      }
+    }
+
+    function onResize(){
+      vh = window.innerHeight || document.documentElement.clientHeight;
+      onScroll();
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    onResize();
+  })
+
+  document.addEventListener("DOMContentLoaded", () => {
+            const navbar = document.querySelector(".navbar");
+
+            window.addEventListener("scroll", () => {
+                const scrollY = window.scrollY;
+
+                if (scrollY > 10) {
+                navbar.classList.add("transparent");
+                } else {
+                navbar.classList.remove("transparent");
+                }
+            });
+
+            const navLinks = document.querySelectorAll(".nav-links a");
+            navLinks.forEach(link => {
+                if (link.href === window.location.href) {
+                link.classList.add("active");
+                }
+            });
+
+            const hamburger = document.querySelector(".hamburger");
+            const navMenu = document.querySelector(".nav-links");
+            hamburger.addEventListener("click", () => {
+                navMenu.classList.toggle("show");
+            });
+        });
+
+    async function checkLive() {
+      try {
+        let res = await fetch("https://lulekbot.onrender.com/status");
+        let data = await res.json();
+
+        const indicator = document.getElementById("live-indicator");
+        const status = document.getElementById("live-status");
+        const link = document.getElementById("live-link");
+
+        if (data.live) {
+          indicator.classList.add("live");
+          indicator.classList.remove("offline");
+          status.textContent = "🔴 Luliyy is LIVE!";
+          link.href = data.link || "https://www.tiktok.com/@luliyykitty/live";
+          link.style.display = "inline-block";
+        } else {
+          indicator.classList.add("offline");
+          indicator.classList.remove("live");
+          status.textContent = "⚫ Currently Offline";
+          link.style.display = "none";
         }
+      } catch (e) {
+        console.error("Could not fetch live status:", e);
+      }
+    }
 
-        async function markAsPending(id) {
-            const { error } = await client
-                .from("hsr_review_requests")
-                .update({ status: "pending" })
-                .eq("id", id);
+    setInterval(checkLive, 30000); // check every 30s
+    checkLive();
+  </script>
 
-            if (error) {
-                console.error("Error updating request:", error);
-                alert("Failed to mark as pending");
-            } else {
-                loadRequests();
-            }
-        }
-
-        async function deleteRequest(id) {
-            if (!confirm("Are you sure you want to delete this request? This cannot be undone.")) {
-                return;
-            }
-
-            const { error } = await client
-                .from("hsr_review_requests")
-                .delete()
-                .eq("id", id);
-
-            if (error) {
-                console.error("Error deleting request:", error);
-                alert("Failed to delete request");
-            } else {
-                loadRequests();
-            }
-        }
-
-        client
-            .channel('public:hsr_review_requests')
-            .on('postgres_changes', { 
-                event: '*', 
-                schema: 'public', 
-                table: 'hsr_review_requests' 
-            }, payload => {
-                console.log('Realtime change detected:', payload);
-                loadRequests();
-            })
-            .subscribe();
-
-        document.getElementById("filter-status").addEventListener("change", filterAndDisplayRequests);
-        document.getElementById("search-input").addEventListener("input", filterAndDisplayRequests);
-
-        loadRequests();
-    </script>
+  <footer>
+    <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
+  </footer>
 </body>
+
 </html>
