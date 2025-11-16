@@ -209,6 +209,9 @@
             margin-bottom: 1rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid rgba(255, 182, 249, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .request-header h3 {
@@ -393,6 +396,35 @@
             margin-top: 0.5rem;
         }
 
+        .btn-priority {
+            background: linear-gradient(135deg, #ffe066, #ffcc33);
+            color: white;
+            font-size: 0.8rem;
+        }
+        .btn-priority:hover {
+            background: linear-gradient(135deg, #ffd633, #ffbf00);
+            transform: translateY(-2px);
+        }
+
+        .priority-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ffe066, #ffbf00);
+            color: #664d00;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .status-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: flex-start;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -453,6 +485,7 @@
                 <option value="all">All Requests</option>
                 <option value="pending" selected>Pending Only</option>
                 <option value="completed">Completed Only</option>
+                <option value="priority">Priority Only</option>
             </select>
             <input type="text" id="search-input" placeholder="Search by TikTok username or character...">
             <button onclick="loadRequests()">Refresh</button>
@@ -527,7 +560,8 @@
             const { data, error } = await client
                 .from("hsr_review_requests")
                 .select("*")
-                .order("created_at", { ascending: false });
+                .order("is_priority", { ascending: false })
+                .order("created_at", { ascending: true });
 
             if (error) {
                 console.error("Error loading requests:", error);
@@ -561,12 +595,17 @@
 
             let filtered = allRequests;
 
-            if (filterStatus !== "all") {
+            // Filter by status
+            if (filterStatus === "pending" || filterStatus === "completed") {
                 filtered = filtered.filter(r => r.status === filterStatus);
+            } 
+            // Filter by priority (special case)
+            else if (filterStatus === "priority") {
+                filtered = filtered.filter(r => r.is_priority === true);
             }
 
             if (searchTerm) {
-                filtered = filtered.filter(r => 
+                filtered = filtered.filter(r =>
                     r.tiktok_username.toLowerCase().includes(searchTerm) ||
                     r.character.toLowerCase().includes(searchTerm) ||
                     r.hsr_uid.includes(searchTerm)
@@ -594,6 +633,22 @@
             container.innerHTML = requests.map(request => createRequestCard(request)).join("");
         }
 
+        async function togglePriority(id, currentState) {
+            const newState = !currentState;
+
+            const { error } = await client
+                .from("hsr_review_requests")
+                .update({ is_priority: newState })
+                .eq("id", id);
+
+            if (error) {
+                alert("Failed to update priority");
+                return;
+            }
+
+            loadRequests();
+        }
+
         function createRequestCard(request) {
             const date = new Date(request.created_at);
             const formattedDate = date.toLocaleDateString() + " " + date.toLocaleTimeString();
@@ -601,10 +656,20 @@
 
             return `
                 <div class="request-card ${isCompleted ? 'completed' : ''}">
-                    <span class="status-badge ${request.status}">${request.status}</span>
-                    
                     <div class="request-header">
-                        <h3>@${request.tiktok_username}</h3>
+
+                        <div class="status-group">
+                            <span class="status-badge ${request.status}">
+                                ${request.status}
+                            </span>
+                        </div>
+
+                        ${
+                            request.is_priority
+                            ? `<h3>@${request.tiktok_username}⭐</h3>`
+                            : `<h3>@${request.tiktok_username}</h3>`
+                        }
+
                     </div>
 
                     <div class="request-info">
@@ -620,7 +685,7 @@
 
                     ${request.additional_notes ? `
                         <div class="additional-notes">
-                             ${request.additional_notes}
+                            ${request.additional_notes}
                         </div>
                     ` : ''}
 
@@ -629,17 +694,22 @@
                     </div>
 
                     <div class="request-actions">
+                        <button class="btn-priority" onclick="togglePriority(${request.id}, ${request.is_priority})">
+                            ${request.is_priority ? "Remove Priority" : "Mark Priority"}
+                        </button>
+
                         ${!isCompleted ? `
                             <button class="btn-complete" onclick="markAsCompleted(${request.id})">
-                                 Mark Done
+                                Mark Done
                             </button>
                         ` : `
                             <button class="btn-undo" onclick="markAsPending(${request.id})">
-                                 Undo
+                                Undo
                             </button>
                         `}
+
                         <button class="btn-delete" onclick="deleteRequest(${request.id})">
-                             Delete
+                            Delete
                         </button>
                     </div>
                 </div>
