@@ -32,7 +32,6 @@
     </nav>
   </header>
 
-  <!-- Review Promo Button -->
   <div class="review-promo">
     <a href="community.html#review" class="review-promo-btn">
       <span class="review-promo-icon">⭐</span>
@@ -111,8 +110,15 @@
     </section>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    let clickCount = 0;
+  const SUPABASE_URL = "https://hawxtrgfskqoyveyathl.supabase.co"; 
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhhd3h0cmdmc2txb3l2ZXlhdGhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDczODMsImV4cCI6MjA3NzQ4MzM4M30.fYinRM_sBeam2W_0Ylg7PezTQNSW0kmLr3X4Ac2S8QQ";
+
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let reviewOpen = true;
+  let clickCount = 0;
   const headerImg = document.getElementById("header-img");
 
   headerImg.addEventListener("click", () => {
@@ -128,6 +134,47 @@
       setTimeout(() => createLove(), i * 100);
     }
   }
+
+  async function checkReviewStatus() {
+    try {
+        const { data, error } = await client
+            .from("review_settings")
+            .select("submissions_enabled")
+            .eq("id", 1)
+            .single();
+
+        if (error) {
+            console.error("Error fetching review status:", error);
+            return;
+        }
+
+        const promo = document.querySelector(".review-promo");
+
+        if (!data.submissions_enabled) {
+            promo.style.display = "none";
+        } else {
+            promo.style.display = "block";
+        }
+
+    } catch (err) {
+        console.error("Review status fetch failed:", err);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", checkReviewStatus);
+
+  client
+    .channel("public:review_settings")
+    .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "review_settings" },
+        payload => {
+            const promo = document.querySelector(".review-promo");
+            promo.style.display = payload.new.submissions_enabled ? "block" : "none";
+        }
+    )
+    .subscribe();
+
 
   function createLove() {
     const love = document.createElement("div");

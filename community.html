@@ -65,7 +65,10 @@
 
       <div id="tab-review" class="tab-content">
         <section class="review-section">
-          <h2>⭐ HSR Account Review Request</h2>
+          <h2>HSR Account Review Request</h2>
+          <div id="review-closed" class="error-message" style="display:none; margin-bottom:15px;">
+            ❌ Review submissions are currently closed.
+          </div>
           <form class="review-form" onsubmit="event.preventDefault(); submitReview();">
             <input type="text" id="tiktok-username" placeholder="TikTok Username *" required>
             <input type="text" id="hsr-uid" placeholder="HSR UID *" required pattern="[0-9]+" title="Please enter numbers only">
@@ -321,7 +324,64 @@
 
   loadNotes();
 
+  // --- REVIEW SUBMISSION TOGGLE ---
+  async function checkSubmissionStatus() {
+    const { data, error } = await client
+      .from("review_settings")
+      .select("submissions_enabled")
+      .eq("id", 1)
+      .single();
+
+    if (error) {
+      console.error("Failed to load submission setting:", error);
+      return;
+    }
+
+    updateSubmissionUI(data.submissions_enabled);
+  }
+
+  function updateSubmissionUI(isEnabled) {
+    const form = document.querySelector(".review-form");
+    const btn = document.getElementById("review-submit-btn");
+    const closedMsg = document.getElementById("review-closed");
+
+    if (isEnabled) {
+      form.style.display = "block";
+      btn.disabled = false;
+      closedMsg.style.display = "none";
+    } else {
+      form.style.display = "none";
+      btn.disabled = true;
+      closedMsg.style.display = "block";
+    }
+  }
+
+  // Listen for realtime changes
+  client
+    .channel("public:review_settings")
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "review_settings" },
+      (payload) => {
+        updateSubmissionUI(payload.new.submissions_enabled);
+      }
+    )
+    .subscribe();
+
+  checkSubmissionStatus();
+
   async function submitReview() {
+    const { data: setting } = await client
+      .from("review_settings")
+      .select("submissions_enabled")
+      .eq("id", 1)
+      .single();
+
+    if (!setting || !setting.submissions_enabled) {
+      alert("Review submissions are currently closed.");
+      return;
+    }
+    
     const tiktokUsername = document.getElementById("tiktok-username").value.trim();
     const hsrUid = document.getElementById("hsr-uid").value.trim();
     const character = document.getElementById("character-select").value.trim();
