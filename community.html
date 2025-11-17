@@ -74,10 +74,15 @@
             <input type="text" id="hsr-uid" placeholder="HSR UID *" required pattern="[0-9]+" title="Please enter numbers only">
             <input type="text" id="character-select" placeholder="Character that want to be reviewed *" required>
             <textarea id="additional-notes" placeholder="Additional notes (optional)" rows="4"></textarea>
-            <button type="submit" id="review-submit-btn">Submit Request ⭐</button>
+            <button type="submit" id="review-submit-btn">Submit Request</button>
           </form>
           <div class="success-message" id="review-success">✅ Request submitted successfully!</div>
           <div class="error-message" id="review-error">❌ Something went wrong. Please try again.</div>
+          
+          <div class="pending-submissions">
+            <h3>📋 Pending Reviews (<span id="pending-count">0</span>)</h3>
+            <div id="pending-list" class="pending-list"></div>
+          </div>
         </section>
       </div>
 
@@ -424,6 +429,84 @@
       setTimeout(() => successMsg.style.display = "none", 5000);
     }
   }
+
+  async function loadReviewRequests() {
+    const container = document.getElementById("pending-list"); // <--- your target div
+    const counter = document.getElementById("pending-count");
+
+    if (!container) {
+      console.error("Missing container: #pending-list");
+      return;
+    }
+
+    container.innerHTML = "<p>Loading...</p>";
+
+    // Fetch sorted pending requests
+    const { data, error } = await client
+      .from("hsr_review_requests")
+      .select("*")
+      .eq("status", "pending")
+      .order("is_priority", { ascending: false })   // Priority first
+      .order("created_at", { ascending: true });    // Oldest first
+
+    if (error) {
+      console.error("Failed to load review requests:", error);
+      container.innerHTML = "<p>Error loading requests.</p>";
+      return;
+    }
+
+    counter.textContent = data.length;
+
+    // If no requests
+    if (!data || data.length === 0) {
+      container.innerHTML = "<p class='empty-msg'>No pending requests.</p>";
+      return;
+    }
+
+    // Generate the HTML list
+    container.innerHTML = data.map(req => `
+      <div class="request-card">
+        
+        <div class="request-header">
+
+          <span style="color: black;" class="status-badge pending">Pending</span>
+
+          <h3 class="request-user">
+            @${req.tiktok_username}
+            ${req.is_priority ? "⭐" : ""}
+          </h3>
+        </div>
+
+        <div class="request-body">
+          <p style="color: black;"><strong>UID:</strong> ${req.hsr_uid}</p>
+          <p style="color: black;"><strong>Character:</strong> ${req.character}</p>
+
+          ${req.additional_notes ? `
+            <p style="color: black;" class="notes"><strong>Notes:</strong> ${req.additional_notes}</p>
+          ` : ""}
+        </div>
+
+        <small style="color: gray;" class="request-time">
+          Submitted: ${new Date(req.created_at).toLocaleString()}
+        </small>
+
+      </div>
+    `).join("");
+  }
+
+  client
+    .channel("public:hsr_review_requests")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "hsr_review_requests" },
+      (payload) => {
+        // Reload the list whenever anything changes
+        loadReviewRequests();
+      }
+    )
+    .subscribe();
+
+  loadReviewRequests();
 
   document.addEventListener("DOMContentLoaded", () => {
     const tabs = document.querySelectorAll(".tab-btn");
