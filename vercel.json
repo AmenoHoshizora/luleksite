@@ -5,6 +5,6 @@
   "framework": "other",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/src/index.ts" }
+    { "source": "/(.*)", "destination": "/api/index.ts" }
   ]
 }
