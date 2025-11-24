@@ -1,0 +1,10 @@
+{
+  "buildCommand": "bun install",
+  "devCommand": "bun dev",
+  "installCommand": "bun install",
+  "framework": "other",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/src/index.ts" }
+  ]
+}
