@@ -2,7 +2,6 @@
   "buildCommand": "bun install",
   "installCommand": "bun install",
   "devCommand": "bun dev",
-  "framework": "elysia",
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.ts" }
