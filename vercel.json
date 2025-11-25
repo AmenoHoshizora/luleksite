@@ -3,6 +3,6 @@
   "devCommand": "bun dev",
   "bunVersion": "1.x",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index.ts" }
+    { "source": "/(.*)", "destination": "/src/index.ts" }
   ]
 }
