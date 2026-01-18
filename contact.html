@@ -50,50 +50,122 @@
       </main>
     </section>
 
+    <div id="mail-anim-container" class="mail-anim-container">
+      <div class="envelope">
+        
+        <div class="flap"></div>
+
+        <div class="envelope-body">
+            
+            <div class="back"></div>
+
+            <div class="letter">
+                <div class="letter-lines"></div>
+                <div class="letter-lines"></div>
+                <div class="letter-lines short"></div>
+            </div>
+
+            <div class="front-sides"></div>
+
+            <div class="front-bottom"></div>
+            
+        </div>
+
+        <div class="heart">❤️</div>
+
+      </div>
+    </div>
+
     <div id="form-message" class="form-message"></div>
 
   <script>
+    // --- CONFIGURATION ---
+    const TEST_MODE = true; 
+    // ---------------------
+
     const form = document.getElementById("contact-form");
     const messageBox = document.getElementById("form-message");
+    const animContainer = document.getElementById("mail-anim-container");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault(); 
 
       const formData = new FormData(form);
+      const parentSection = form.closest('section');
 
+      // 1. Hide Form
+      parentSection.classList.add("section-fade-out");
+      
+      // 2. Start Animation
+      animContainer.classList.add("active", "start");
+      void animContainer.offsetWidth; 
+
+      // Timeline:
+      // 0ms:   Container appears
+      // 100ms: Insert Letter
+      setTimeout(() => animContainer.classList.add("inserting"), 100);
+
+      // 900ms: Close Envelope
+      setTimeout(() => animContainer.classList.add("closed"), 900);
+
+      // 1500ms: STAMP THE HEART ❤️
+      setTimeout(() => animContainer.classList.add("sealed"), 1500);
+
+      // 2100ms: Fly Away
+      setTimeout(() => animContainer.classList.add("flying"), 2100);
+
+      // 3. Send Data
       try {
-        const res = await fetch("https://formspree.io/f/xzzjbwge", { // ← your Formspree endpoint
-          method: "POST",
-          body: formData,
-          headers: { 'Accept': 'application/json' }
-        });
+        let isSuccess = false;
 
-        if (res.ok) {
-          messageBox.textContent = "✅ Thank you! Your message has been sent.";
-          messageBox.className = "form-message success";
-          form.reset();
+        if (TEST_MODE) {
+          await new Promise(r => setTimeout(r, 1500)); 
+          isSuccess = true;
         } else {
-          messageBox.textContent = "⚠️ Oops! Something went wrong. Please try again.";
-          messageBox.className = "form-message error";
+          const res = await fetch("https://formspree.io/f/xzzjbwge", { 
+            method: "POST",
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+          });
+          isSuccess = res.ok;
         }
-      } catch (err) {
-        messageBox.textContent = "⚠️ Could not send message. Check your connection.";
-        messageBox.className = "form-message error";
-      }
 
-      // Auto-hide after 5 seconds
-      setTimeout(() => {
-        messageBox.textContent = "";
-        messageBox.className = "form-message";
-      }, 5000);
+        // 4. Show Result (Wait for flight ~3.5s total)
+        setTimeout(() => {
+            animContainer.classList.remove("active", "start", "inserting", "closed", "flying", "sealed");
+            
+            if (isSuccess) {
+              parentSection.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="font-size: 4rem; margin-bottom: 10px;">💌</div>
+                    <h2 style="color: #ff7ad3; font-family: 'Pacifico', cursive;">Message Sent!</h2>
+                    <p style="color: #666;">Thank you for reaching out.<br>Your mail is flying my way!</p>
+                </div>
+              `;
+              parentSection.classList.remove("section-fade-out");
+            } else {
+              parentSection.classList.remove("section-fade-out");
+              messageBox.textContent = "⚠️ Oops! Something went wrong.";
+              messageBox.className = "form-message error";
+            }
+        }, 3500);
+
+      } catch (err) {
+        setTimeout(() => {
+            parentSection.classList.remove("section-fade-out");
+            animContainer.classList.remove("active", "start", "inserting", "closed", "flying", "sealed");
+            messageBox.textContent = "⚠️ Network error. Please try again.";
+            messageBox.className = "form-message error";
+        }, 3500);
+      }
     });
 
+    // --- Existing Navbar & Scroll Logic ---
     document.addEventListener("DOMContentLoaded", () => {
               const navbar = document.querySelector(".navbar");
 
               window.addEventListener("scroll", () => {
                   const scrollY = window.scrollY;
-
                   if (scrollY > 10) {
                   navbar.classList.add("transparent");
                   } else {
@@ -114,7 +186,7 @@
                   navMenu.classList.toggle("show");
               });
           });
-  </script>
+</script>
 
     <footer>
       <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
