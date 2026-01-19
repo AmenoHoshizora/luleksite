@@ -1431,10 +1431,28 @@ body.modal-open {
   cursor: grab;
   transition: transform 0.1s ease;
   padding: 20px;
+  
+  /* --- NEW CODE STARTS HERE --- */
+  width: 220px;              /* Sets a standard width for all notes */
+  overflow-wrap: break-word; /* Forces long words to break */
+  word-wrap: break-word;     /* Legacy support */
+  /* --- NEW CODE ENDS HERE --- */
 }
 
-.note p{
-  color: #000;
+.note p {
+  /* Change color from #000 to inherit so JS can control it */
+  color: inherit; 
+  margin: 0;
+}
+
+/* Ensure the author name also adapts */
+.note small {
+  display: block;
+  text-align: right;
+  margin-top: 10px;
+  color: inherit;      /* Changed from #555 */
+  opacity: 0.8;        /* Makes it slightly dimmer than main text */
+  font-size: 0.8rem;
 }
 
 .note:active {
@@ -1459,14 +1477,6 @@ body.modal-open {
   background: #ff7eb3;
   border-radius: 50%;
   box-shadow: inset -2px -2px 3px rgba(0,0,0,0.25);
-}
-
-.note small {
-  display: block;
-  text-align: right;
-  margin-top: 10px;
-  color: #555;
-  font-size: 0.8rem;
 }
 
 .community-tabs {

@@ -229,6 +229,22 @@
     else renderNotes(data);
   }
 
+  function getContrastColor(hexColor) {
+    // Remove hash if present
+    const hex = hexColor.replace("#", "");
+    
+    // Parse R, G, B values
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Calculate brightness (YIQ formula)
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    
+    // Return black for light backgrounds, white for dark
+    return (yiq >= 128) ? '#000000' : '#ffffff';
+  }
+
   async function renderNotes(notes) {
     const board = document.getElementById("notes-board");
     board.innerHTML = "";
@@ -236,7 +252,16 @@
     notes.forEach(n => {
       const note = document.createElement("div");
       note.className = "note";
-      note.style.background = n.color || "#fff7b1";
+      
+      // Get background color (default to yellow if missing)
+      const bgColor = n.color || "#fff7b1";
+      
+      // Calculate text color based on background
+      const textColor = getContrastColor(bgColor);
+
+      note.style.background = bgColor;
+      note.style.color = textColor; // Apply the calculated text color
+      
       note.style.left = (n.pos_x ?? 100) + "px";
       note.style.top = (n.pos_y ?? 100) + "px";
       note.dataset.id = n.id;
@@ -876,7 +901,4 @@
       <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
     </footer>
 </body>
-
 </html>
-
-
