@@ -355,14 +355,14 @@
 
     async function checkLive() {
       try {
-        let res = await fetch("https://lulekbot.onrender.com/status");
+        let res = await fetch("https://luleksite.vercel.app/tiktok-status");
         let data = await res.json();
 
         const indicator = document.getElementById("live-indicator");
         const status = document.getElementById("live-status");
         const link = document.getElementById("live-link");
 
-        if (data.live) {
+        if (data.isLive) {
           indicator.classList.add("live");
           indicator.classList.remove("offline");
           status.textContent = "🔴 Luliyy is LIVE!";
@@ -387,5 +387,6 @@
     <p>Made with ❤️ for the community by Ameno • © 2025 LuliyyKitty</p>
   </footer>
 </body>
+
 
 </html>
