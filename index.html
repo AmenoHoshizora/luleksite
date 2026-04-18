@@ -231,7 +231,7 @@
 
     async function loadOnlineMembers() {
       try {
-        let res = await fetch("http://157.90.120.150:8080/api/online_members"); 
+        let res = await fetch("https://api.luliyykitty.site/api/online_members");
         let data = await res.json();
         let container = document.getElementById("online-members");
         let countSpan = document.getElementById("online-count");
