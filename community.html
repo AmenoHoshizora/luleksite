@@ -104,7 +104,7 @@
     const pastelColors = ["#fff7b1", "#ffe6f2", "#e3f9ff", "#d4ffd4", "#fff0d6"];
     const pinColors = ["#ff7b7b", "#ffb347", "#90ee90", "#87cefa", "#dda0dd"];
 
-    const res = await fetch("http://157.90.120.150:8080/api/fanart");
+    let res = await fetch("https://api.luliyykitty.site/api/fanart");
     const data = await res.json();
     const board = document.getElementById("fanart-board");
     const isMobile = window.innerWidth <= 768;
