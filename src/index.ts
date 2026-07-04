@@ -37,7 +37,8 @@ const app = new Elysia()
     .get('/tiktok-status', async () => {
         const tiktokUsername = 'luliyykitty'
         try {
-            const connection = new TikTokLiveConnection(tiktokUsername)
+            // Added the empty object {} as the second argument
+            const connection = new TikTokLiveConnection(tiktokUsername, {})
             const state = await connection.connect()
             const data = { isLive: true }
             connection.disconnect()
