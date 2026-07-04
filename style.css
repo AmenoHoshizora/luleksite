@@ -1,3 +1,14 @@
+:root {
+    --mint: #a8e4d3;
+    --mint-glow: rgba(168, 228, 211, 0.3);
+    --pink: #f8c8d4;
+    --pink-dark: #d18a9e;
+    --white: #f4f6f6;
+    --black: #000000;
+    --bg-dark: rgba(44, 47, 51, 0.85);
+    --text-dark: #2c2f33;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,8 +17,8 @@
 
 body {
     font-family: "Poppins", "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #b3e5fc, #ffc1e3);
-    color: #fefefe;
+    background: linear-gradient(135deg, #1a1d21 0%, #2c2f33 50%, #1e2225 100%);
+    color: var(--white);
     line-height: 1.6;
     text-align: center;
     min-height: 100vh;
@@ -17,9 +28,175 @@ body {
 }
 
 @keyframes bgShift {
-    0%   { background: linear-gradient(135deg, #b3e5fc, #ffc1e3); }
-    100% { background: linear-gradient(135deg, #c5e1ff, #ffb6f9); }
+    0%   { background: linear-gradient(135deg, #1a1d21, #2c2f33); }
+    100% { background: linear-gradient(135deg, #1e2425, #2a2d32); }
 }
+
+/* ============================================
+   GLITCH / HOLOGRAPHIC KEYFRAMES
+   (from stream_style.css)
+   ============================================ */
+
+@keyframes holoScan {
+    0% { top: -25%; }
+    100% { top: 125%; }
+}
+
+@keyframes eventHoloScan {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+@keyframes messageGlitch {
+    0%, 94%, 100% {
+        transform: translate(0) skew(0);
+        filter: none;
+    }
+    95% {
+        transform: translate(-2px, 1px) skewX(2deg);
+        filter: drop-shadow(-3px 0 0 var(--pink)) drop-shadow(3px 0 0 var(--mint));
+    }
+    96% {
+        transform: translate(2px, -1px) skewX(-2deg);
+        filter: drop-shadow(3px 0 0 var(--pink)) drop-shadow(-3px 0 0 var(--mint)) brightness(1.2);
+    }
+    97% {
+        transform: translate(0) skew(0);
+        filter: none;
+    }
+}
+
+@keyframes cyberSlice {
+    0% {
+        opacity: 0;
+        transform: translateX(-15px);
+        clip-path: inset(0 100% 0 0);
+        filter: brightness(2) blur(2px);
+    }
+    70% {
+        filter: brightness(1.5) blur(0px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+        clip-path: inset(0 0 0 0);
+        filter: brightness(1);
+    }
+}
+
+@keyframes idleGlitch {
+    0%, 92%, 100% {
+        transform: translate(0) skew(0);
+        filter: none;
+    }
+    93% {
+        transform: translate(-3px, 1px) skewX(1deg);
+        filter: drop-shadow(-4px 0 0 var(--pink)) drop-shadow(4px 0 0 var(--mint));
+    }
+    94% {
+        transform: translate(2px, -2px) skewX(-2deg);
+        filter: drop-shadow(4px 0 0 var(--pink)) drop-shadow(-4px 0 0 var(--mint)) brightness(1.3);
+    }
+    95% {
+        transform: translate(0) skew(0);
+        filter: none;
+    }
+    97% {
+        transform: translate(-1px, 0) scale(1.005);
+        filter: contrast(1.3);
+    }
+    98% {
+        transform: translate(0) scale(1);
+        filter: none;
+    }
+}
+
+@keyframes containerGlitch {
+    0%, 90%, 100% {
+        transform: translate(0) scale(1);
+        filter: none;
+    }
+    91% {
+        transform: translate(-3px, 1px) scale(1.01) skewX(1deg);
+        filter: drop-shadow(-5px 0 0 var(--pink)) drop-shadow(5px 0 0 var(--mint)) contrast(1.3) brightness(1.2);
+    }
+    92% {
+        transform: translate(3px, -2px) scale(0.99) skewX(-1deg);
+        filter: hue-rotate(90deg) contrast(1.2) brightness(1.1);
+    }
+    93% {
+        transform: translate(0) scale(1) skew(0);
+        filter: none;
+    }
+}
+
+@keyframes scanlineSweep {
+    0% { transform: translateY(-10px); }
+    100% { transform: translateY(90px); }
+}
+
+@keyframes wavePulse {
+    0% { height: 2px; }
+    100% { height: 12px; }
+}
+
+/* ============================================
+   HOLOGRAPHIC PANEL MIXIN CLASSES
+   ============================================ */
+
+.holo-panel {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10, 20, 25, 0.45), rgba(20, 40, 45, 0.25));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(168, 228, 211, 0.25);
+    border-top: 2px solid var(--mint);
+    border-bottom: 2px solid var(--pink);
+    box-shadow: 0 0 20px rgba(168, 228, 211, 0.12), inset 0 0 15px rgba(248, 200, 212, 0.05);
+    overflow: hidden;
+}
+
+.holo-panel::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.12), transparent);
+    animation: holoScan 6s linear infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.holo-bar {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10, 20, 25, 0.45), rgba(20, 40, 45, 0.25));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(168, 228, 211, 0.25);
+    border-left: 3px solid var(--mint);
+    border-right: 3px solid var(--pink);
+    box-shadow: 0 0 15px rgba(168, 228, 211, 0.12), inset 0 0 10px rgba(248, 200, 212, 0.05);
+    overflow: hidden;
+}
+
+.holo-bar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(168, 228, 211, 0.15), transparent);
+    animation: eventHoloScan 4s infinite linear;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* ============================================
+   HEADER & HERO
+   ============================================ */
 
 header {
     margin-bottom: 40px;
@@ -30,14 +207,14 @@ header img {
     margin: 0 auto;
     transition: transform 0.3s ease, filter 0.3s ease;
 
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))
-            drop-shadow(0 0 30px rgba(246, 149, 247, 0.8));
+    filter: drop-shadow(0 0 15px var(--mint-glow))
+            drop-shadow(0 0 30px rgba(248, 200, 212, 0.8));
 }
 
 header img:hover {
     transform: scale(1.05) rotate(1deg);
-    filter: drop-shadow(0 0 25px rgba(246, 149, 247, 1))
-            drop-shadow(0 0 50px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 0 25px rgba(168, 228, 211, 1))
+            drop-shadow(0 0 50px rgba(248, 200, 212, 0.8));
 }
 
 .love {
@@ -50,18 +227,18 @@ header img:hover {
 }
 
 #live-indicator {
-  color: #000;
+  color: var(--white);
 }
 
 @keyframes glowPulse {
-    0%, 100% { text-shadow: 0 0 10px #ffb6f9, 0 0 20px #b3e5fc; }
-    50%      { text-shadow: 0 0 25px #ff9edf, 0 0 45px #a7e0ff; }
+    0%, 100% { text-shadow: 0 0 10px var(--pink), 0 0 20px var(--mint); }
+    50%      { text-shadow: 0 0 25px #d18a9e, 0 0 45px #8dd4be; }
 }
 
 .parallax-hero {
     position: relative;
     height: 80vh;
-    overflow: hidden; 
+    overflow: hidden;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -73,63 +250,132 @@ header img:hover {
     top: 0;
     left: 0;
     width: 100%;
-    height: 120%;  
-    background: url("luli1.JPG") no-repeat center center;
+    height: 120%;
+    background: url("images/luli1.jpg") no-repeat center center;
     background-size: cover;
-    z-index: -1; 
+    z-index: -1;
     will-change: transform;
 }
 
 .about-text {
     max-width: 500px;
     top: 50%;
-    color: #000000;
-    text-align: right;
+    text-align: right; /* Keeps your original alignment */
     z-index: 1;
+    
+    /* Frosted Glass Properties */
+    background: rgba(10, 20, 25, 0.75); 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 35px 45px;
+    border-radius: 20px;
+    border: 1px solid rgba(168, 228, 211, 0.2);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    
+    /* Keeps the holo scanline inside the box */
+    overflow: hidden; 
+    
+    /* Smooth hover fading */
+    transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
 }
 
-.about-text.pinned{
-    position: fixed;   
-    left: 50%; top: 50%;
+/* Ensure the pinned state still works smoothly */
+.about-text.pinned {
+    position: fixed;
+    left: 50%; 
+    top: 50%;
     transform: translate(-50%,-50%);
+}
+
+/* Generates the holographic moving scanline for the hero text */
+.about-text::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.15), transparent);
+    animation: holoScan 6s linear infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Fades the container and text to zero when hovered */
+.parallax-hero .about-text:hover {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+}
+
+.about-text p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--white); /* Changed from --black */
 }
 
 .about-text h2 {
     font-size: 2rem;
     font-weight: 800;
     margin-bottom: 12px;
-    background: linear-gradient(90deg, #4dc7ff, #fb6ebc);
+    background: linear-gradient(90deg, var(--mint), var(--pink-dark));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.about-text p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-}
-
 h2 {
     font-size: 1.2rem;
-    color: #000000;
+    color: var(--white);
     opacity: 0.9;
 }
+
+/* ============================================
+   SECTIONS — HOLOGRAPHIC PANELS
+   ============================================ */
 
 section {
     margin: 40px auto;
     max-width: 800px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.75);
+    position: relative;
+    background: linear-gradient(135deg, rgba(10, 20, 25, 0.5), rgba(20, 40, 45, 0.35));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: 18px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(168, 228, 211, 0.2);
+    border-top: 2px solid var(--mint);
+    border-bottom: 2px solid var(--pink);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 25px rgba(168, 228, 211, 0.08), inset 0 0 15px rgba(248, 200, 212, 0.04);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+section::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.1), transparent);
+    animation: holoScan 7s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 section:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 35px rgba(255, 182, 249, 0.45);
+    box-shadow: 0 6px 35px rgba(168, 228, 211, 0.18), 0 0 30px rgba(248, 200, 212, 0.08), inset 0 0 15px rgba(248, 200, 212, 0.06);
 }
+
+section * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================================
+   SOCIAL / DONATION BUTTONS
+   ============================================ */
 
 .link-buttons {
     display: flex;
@@ -186,22 +432,22 @@ section:hover {
 .social-btn::after {
     content: "";
     position: absolute;
-    inset: -4px;                
+    inset: -4px;
     border-radius: 50%;
     opacity: 0;
     transition: opacity .2s ease, box-shadow .2s ease;
     pointer-events: none;
 }
 
-.social-btn.discord:hover::after { 
+.social-btn.discord:hover::after {
     box-shadow: 0 0 0 3px rgba(88,101,242,.9), 0 0 22px rgba(88,101,242,.75);
     opacity: 1;
 }
-.social-btn.twitch:hover::after { 
+.social-btn.twitch:hover::after {
     box-shadow: 0 0 0 3px rgba(145,70,255,.9), 0 0 22px rgba(145,70,255,.75);
     opacity: 1;
 }
-.social-btn.youtube:hover::after { 
+.social-btn.youtube:hover::after {
     box-shadow: 0 0 0 3px rgba(255,0,0,.9), 0 0 22px rgba(255,0,0,.75);
     opacity: 1;
 }
@@ -211,7 +457,7 @@ section:hover {
     content: "";
     position: absolute;
     inset: -4px;
-    border-radius: 50%; 
+    border-radius: 50%;
     opacity: 0;
     transition: opacity .25s ease, box-shadow .25s ease, transform .25s ease;
     pointer-events: none;
@@ -243,10 +489,11 @@ section:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f4f4f4;
+    background: rgba(10, 20, 25, 0.6);
     transition: 0.3s;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 10px rgba(168, 228, 211, 0.08);
+    border: 1px solid rgba(168, 228, 211, 0.15);
 }
 
 .donation-buttons .social-btn img {
@@ -275,7 +522,7 @@ section:hover {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 500;
-    color: #000000;
+    color: var(--white);
     transition: 0.3s;
 }
 
@@ -283,7 +530,7 @@ footer {
     margin-top: 40px;
     margin-bottom: 20px;
     font-size: 0.9rem;
-    color: #000000;
+    color: var(--white);
     opacity: 0.8;
 }
 
@@ -301,8 +548,8 @@ background: #444;
 color: #aaa;
 }
 .badge.online {
-background: #ff2d55;
-color: #fff;
+background: var(--mint);
+color: var(--text-dark);
 }
 
 #toggle-handle {
@@ -314,18 +561,22 @@ color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #ffb6f9;
-    color: #1a1a1a;
+    background: var(--mint);
+    color: var(--text-dark);
     border: none;
     border-radius: 12px;
     font-size: 15px;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.35), 0 0 15px var(--mint-glow);
     z-index: 1001;
-    transition: transform .15s ease, background .2s ease;
+    transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
 }
-#toggle-handle:hover { background: #ff8fe0; transform: translateY(-1px); }
+#toggle-handle:hover { background: #8dd4be; transform: translateY(-1px); box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 20px var(--mint-glow); }
+
+/* ============================================
+   DISCORD SIDEBAR — HOLOGRAPHIC
+   ============================================ */
 
 .discord-sidebar {
     position: fixed;
@@ -339,7 +590,7 @@ color: #fff;
     transition: transform 0.35s ease-in-out;
     border-radius: 16px 0 0 0;
     background: transparent;
-    backdrop-filter: none;   
+    backdrop-filter: none;
     overflow: hidden;
     transform: translateX(100%);
     box-shadow: none;
@@ -355,20 +606,27 @@ color: #fff;
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    background: #2c2f33;
+    background: linear-gradient(90deg, rgba(168, 228, 211, 0.12), transparent);
     border-radius: 16px 0 0 0;
+    border-bottom: 2px solid var(--mint);
+    color: var(--mint);
+    text-shadow: 0 0 8px var(--mint-glow);
 }
 
 .discord-members {
     position: relative;
     width: 280px;
     height: 46vh;
-    background: rgba(30,31,34,0.88);
+    background: rgba(10, 20, 25, 0.88);
     border-radius: 16px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     padding: 12px;
+    border: 1px solid rgba(168, 228, 211, 0.1);
+    border-top: 2px solid var(--mint);
+    border-bottom: 2px solid var(--pink);
+    box-shadow: 0 0 20px rgba(168, 228, 211, 0.1), inset 0 0 10px rgba(248, 200, 212, 0.05);
 
     transform: translateX(110%);
     will-change: transform;
@@ -386,10 +644,11 @@ color: #fff;
     text-align: center;
     padding: 8px 10px;
     border-radius: 10px;
-    background: rgba(43,45,49,0.9);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: #ffffff;
+    background: linear-gradient(90deg, rgba(168, 228, 211, 0.1), transparent);
+    border: 1px solid rgba(168, 228, 211, 0.1);
+    color: var(--white);
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    text-shadow: 0 0 6px var(--mint-glow);
 }
 
 .role-section h3 {
@@ -399,12 +658,12 @@ color: #fff;
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 0.05em;
-    background: linear-gradient(90deg, #b3e5fc, #ffc1e3);
+    background: linear-gradient(90deg, var(--mint), var(--pink));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-align: left;
     padding-left: 6px;
-    border-left: 3px solid #ffb6f9;
+    border-left: 3px solid var(--pink);
 }
 
 .member {
@@ -416,10 +675,12 @@ color: #fff;
     border-radius: 12px;
     background: rgba(255,255,255,0.05);
     transition: all 0.25s ease;
+    border-left: 2px solid transparent;
 }
 .member:hover {
-    background: rgba(255, 182, 249, 0.15);
+    background: rgba(168, 228, 211, 0.1);
     transform: translateX(4px);
+    border-left: 2px solid var(--mint);
 }
 
 .avatar-wrapper {
@@ -430,8 +691,8 @@ color: #fff;
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.2);
-    box-shadow: 0 0 8px rgba(255,182,249,0.25);
+    border: 2px solid rgba(168, 228, 211, 0.3);
+    box-shadow: 0 0 8px rgba(168, 228, 211, 0.25);
     transition: transform 0.25s ease;
 }
 .member:hover .avatar {
@@ -451,12 +712,12 @@ color: #fff;
 .name {
     font-weight: 600;
     font-size: 0.95rem;
-    color: #fefefe;
+    color: var(--white);
     text-shadow: 0 0 6px rgba(0,0,0,0.4);
     transition: color 0.3s ease;
 }
 .member:hover .name {
-    color: #ffdefc;
+    color: var(--pink);
 }
 .status.online { background: #43b581; }
 .status.idle   { background: #faa61a; }
@@ -464,22 +725,29 @@ color: #fff;
 .status.offline{ background: #747f8d; }
 .empty { color: #a4a4a4; font-style: italic; }
 
+/* ============================================
+   NAVBAR — HOLOGRAPHIC
+   ============================================ */
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: 'Poppins', sans-serif;
   padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.9); /* solid at top */
-  backdrop-filter: blur(6px);
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.6), rgba(20, 40, 45, 0.4));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: background 0.4s ease; /* smooth fade */
+  transition: background 0.4s ease;
+  border-bottom: 1px solid rgba(168, 228, 211, 0.15);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .navbar.transparent {
-  background: rgba(255, 255, 255, 0); /* fully transparent */
+  background: rgba(10, 20, 25, 0);
 }
 
 .nav-badge {
@@ -487,7 +755,7 @@ color: #fff;
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: #333;
+  color: var(--white);
   font-weight: 600;
   transition: opacity 0.2s;
 }
@@ -500,7 +768,7 @@ color: #fff;
   width: 28px;
   height: 28px;
   object-fit: contain;
-  border-radius: 6px; /* optional */
+  border-radius: 6px;
 }
 
 .nav-links {
@@ -513,24 +781,26 @@ color: #fff;
   font-family: "Poppins", "Segoe UI", sans-serif;
   font-weight: 500;
   text-decoration: none;
-  color: #000;
+  color: var(--white);
 }
 
 .nav-links li a {
   text-decoration: none;
   font-weight: 600;
-  color: #333;
+  color: #b0c4c0;
   padding: 6px 10px;
-  transition: color 0.3s;
+  transition: color 0.3s, text-shadow 0.3s;
 }
 
 .nav-links li a.active {
-  color: #ff6fb2;
+  color: var(--mint);
   font-weight: 700;
+  text-shadow: 0 0 8px var(--mint-glow);
 }
 
 .nav-links li a:hover {
-  color: #ff6fb2;
+  color: var(--mint);
+  text-shadow: 0 0 6px var(--mint-glow);
 }
 
 .hamburger {
@@ -544,8 +814,9 @@ color: #fff;
   display: block;
   width: 25px;
   height: 3px;
-  background: #333;
+  background: var(--white);
   border-radius: 3px;
+  box-shadow: 0 0 4px var(--mint-glow);
 }
 
 #live-indicator {
@@ -555,11 +826,12 @@ color: #fff;
 }
 
 #live-indicator.live #live-status {
-  color: red;
+  color: #ff4444;
+  text-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
 }
 
 #live-indicator.offline #live-status {
-  color: gray;
+  color: #888;
 }
 
 #follower-box {
@@ -567,11 +839,29 @@ color: #fff;
   align-items: center;
   gap: 10px;
   padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.6), rgba(20, 40, 45, 0.4));
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3), 0 0 12px rgba(168, 228, 211, 0.08);
   font-family: 'Nunito', sans-serif;
   margin-top: 20px;
+  border: 1px solid rgba(168, 228, 211, 0.15);
+  border-left: 3px solid var(--mint);
+  border-right: 3px solid var(--pink);
+  position: relative;
+  overflow: hidden;
+}
+
+#follower-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(168, 228, 211, 0.12), transparent);
+    animation: eventHoloScan 5s infinite linear;
+    pointer-events: none;
+    z-index: 10;
 }
 
 #tiktok-logo {
@@ -583,15 +873,20 @@ color: #fff;
 #follower-label {
   display: block;
   font-size: 0.9rem;
-  color: #666;
+  color: #a0a8b0;
   margin-bottom: 4px;
 }
 
 #follower-count {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #ff6fb2;
+  color: var(--pink);
+  text-shadow: 0 0 8px rgba(248, 200, 212, 0.3);
 }
+
+/* ============================================
+   ABOUT SECTIONS
+   ============================================ */
 
 .about-section {
   position: relative;
@@ -612,53 +907,64 @@ color: #fff;
   background-position: center;
   opacity: 0;
   transition: transform 1s ease, opacity 1s ease;
-  display: flex;                 /* so text centers inside */
+  display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;                 /* text margin inside */
+  padding: 10px;
   box-sizing: border-box;
 }
 .about-section.left .about-img {
   left: 0;
   transform: translateX(-100%);
-  background-image: url("luli.jpg");
+  background-image: url("images/luli.png");
 }
 .about-section.right .about-img {
   right: 0;
   transform: translateX(100%);
-  background-image: url("lulek1.jpg");
+  background-image: url("images/lulek1.png");
 }
 
-/* TEXT */
 .abt-text {
   position: relative;
   z-index: 2;
-  color: white;
+  color: var(--white);
   text-align: center;
   max-width: 70%;
   font-family: "Poppins", "Segoe UI", sans-serif;
-  text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+  
+  background: rgba(10, 20, 25, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 35px 45px;
+  border-radius: 20px;
+  border: 1px solid rgba(168, 228, 211, 0.2);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  
+  /* NEW: Keeps the holo scanline inside the box */
+  overflow: hidden; 
+  
+  /* NEW: Updated transition for smooth hover fading */
   opacity: 0;
-  transition: transform 1s ease, opacity 1s ease;
+  transition: transform 1s ease, opacity 0.4s ease, backdrop-filter 0.4s ease;
 }
 
 .abt-text h2 {
     font-size: 2rem;
     font-weight: 800;
     margin-bottom: 12px;
-    background: linear-gradient(90deg, #4dc7ff, #fb6ebc);
+    background: linear-gradient(90deg, var(--mint), var(--pink-dark));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .abt-text p {
     font-size: 1.1rem;
-    color: #000000;
-    text-shadow: white;
+    color: var(--white);
     line-height: 1.6;
+    /* Reduced the shadow since the dark glass background now provides the contrast */
+    text-shadow: 0 2px 5px rgba(0,0,0,0.4); 
 }
 
-/* start off-page same as image */
 .about-section.left .abt-text {
   transform: translateX(-100%);
 }
@@ -666,12 +972,36 @@ color: #fff;
   transform: translateX(100%);
 }
 
-/* ACTIVE (slide in) */
 .about-section.show .about-img,
 .about-section.show .abt-text {
   transform: translateX(0);
   opacity: 1;
 }
+
+/* Generates the holographic moving scanline */
+.abt-text::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.15), transparent);
+  animation: holoScan 6s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Fades the container and text to zero when hovered */
+.about-section.show .abt-text:hover {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+}
+
+/* ============================================
+   CONTACT PAGE — HOLOGRAPHIC FORM
+   ============================================ */
 
 .contact-page {
   max-width: 600px;
@@ -688,41 +1018,62 @@ color: #fff;
 }
 
 .contact-page h1{
-  color: #ff7ad3;
+  color: var(--pink);
+  text-shadow: 0 0 10px rgba(248, 200, 212, 0.3);
 }
 
 .contact-page p{
-  color: #d946ef;
+  color: var(--mint);
 }
 
 .contact-form label {
   text-align: left;
   font-weight: 600;
-  color: #000000;
+  color: var(--white);
+  text-shadow: 0 0 4px rgba(0,0,0,0.3);
 }
 
 .contact-form input,
 .contact-form textarea {
   padding: 12px;
   border-radius: 10px;
-  border: 2px solid #ddd;
+  border: 1px solid rgba(168, 228, 211, 0.2);
+  border-bottom: 2px solid var(--pink);
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
+  background: rgba(10, 20, 25, 0.5);
+  color: var(--white);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--mint);
+  border-bottom-color: var(--mint);
+  box-shadow: 0 0 10px var(--mint-glow), inset 0 0 5px rgba(168, 228, 211, 0.05);
 }
 
 .contact-form button {
-  background: #ff7bdc;
-  color: white;
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.15), rgba(168, 228, 211, 0.35));
+  color: var(--mint);
   font-size: 16px;
+  font-weight: 800;
   padding: 12px;
-  border: none;
+  border: 1px solid rgba(168, 228, 211, 0.3);
   border-radius: 10px;
   cursor: pointer;
   transition: 0.3s;
+  text-shadow: 0 0 6px var(--mint-glow);
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
 }
 
 .contact-form button:hover {
-  background: #ff4dc4;
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.3), rgba(168, 228, 211, 0.5));
+  box-shadow: 0 0 15px var(--mint-glow);
+  transform: translateY(-1px);
 }
 
 .form-message {
@@ -737,84 +1088,113 @@ color: #fff;
 }
 
 .form-message.success {
-  color: #155724;
-  background: #d4edda;
-  border: 1px solid #c3e6cb;
+  color: var(--mint);
+  background: rgba(168, 228, 211, 0.12);
+  border: 1px solid rgba(168, 228, 211, 0.3);
   opacity: 1;
 }
 
 .form-message.error {
-  color: #721c24;
-  background: #f8d7da;
-  border: 1px solid #f5c6cb;
+  color: var(--pink);
+  background: rgba(248, 200, 212, 0.12);
+  border: 1px solid rgba(248, 200, 212, 0.3);
   opacity: 1;
 }
+
+/* ============================================
+   TIMELINE — FULLY HOLOGRAPHIC
+   ============================================ */
 
 .timeline {
   position: relative;
   max-width: 80%;
-  background: #fff8fb;
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.5), rgba(20, 40, 45, 0.35));
   overflow: hidden;
   margin: 0 auto;
+  border-radius: 18px;
+  border: 1px solid rgba(168, 228, 211, 0.15);
+  border-top: 2px solid var(--mint);
+  border-bottom: 2px solid var(--pink);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 25px rgba(168, 228, 211, 0.08), inset 0 0 20px rgba(168, 228, 211, 0.03);
 }
 
-/* Title */
+.timeline::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.1), transparent);
+  animation: holoScan 8s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
 .timeline-title {
   text-align: center;
   font-family: 'Pacifico', cursive;
   margin-bottom: 100px;
+  margin-top: 40px;
   font-size: 2.8rem;
-  color: #ff7ad3;
+  color: var(--pink);
+  text-shadow: 0 0 15px rgba(248, 200, 212, 0.3);
   position: relative;
   z-index: 3;
 }
 
-/* Center line */
 .timeline::after {
   content: "";
   position: absolute;
   width: 4px;
-  background-color: #ff91c1;
+  background: linear-gradient(to bottom, var(--mint), var(--pink));
   top: 140px;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   border-radius: 4px;
   z-index: 0;
+  box-shadow: 0 0 12px rgba(168, 228, 211, 0.3);
 }
 
-/* Each timeline item */
 .timeline-item {
   position: relative;
   width: 35%;
   padding: 20px 30px;
-  background: #fff;
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.55), rgba(20, 40, 45, 0.4));
   border-radius: 18px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 10px rgba(168, 228, 211, 0.05);
   margin: 60px 0;
   opacity: 0;
   transition: all 0.8s ease;
   z-index: 1;
+  border: 1px solid rgba(168, 228, 211, 0.1);
+  border-left: 3px solid var(--mint);
+  border-right: 1px solid rgba(248, 200, 212, 0.1);
+  border-bottom: 1px solid rgba(248, 200, 212, 0.05);
+  backdrop-filter: blur(6px);
 }
 
-/* Alternate positions */
 .timeline-item:nth-child(odd) {
-  left: 8%; /* more space from line */
-  transform: translateX(80px); /* slide toward the line */
+  left: 8%;
+  transform: translateX(80px);
 }
 
 .timeline-item:nth-child(even) {
-  left: 57%; /* more space from line */
-  transform: translateX(-80px); /* slide toward the line */
+  left: 57%;
+  transform: translateX(-80px);
 }
 
-/* Reveal animation */
 .timeline-item.show {
   opacity: 1;
   transform: translateX(0);
+  animation: messageGlitch 8s infinite;
 }
 
-/* Circle and connector */
+.timeline-item.show:nth-child(2n) { animation-delay: 2s; }
+.timeline-item.show:nth-child(3n) { animation-delay: 5s; }
+.timeline-item.show:nth-child(4n) { animation-delay: 1s; }
+
 .timeline-item::before,
 .timeline-item::after {
   content: '';
@@ -823,33 +1203,29 @@ color: #fff;
   z-index: 2;
 }
 
-/* Circle */
 .timeline-item::before {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #ff7eb3;
-  border: 3px solid #fff;
-  box-shadow: 0 0 0 4px #ffd1dc;
+  background: var(--mint);
+  border: 3px solid var(--white);
+  box-shadow: 0 0 0 4px rgba(248, 200, 212, 0.4), 0 0 12px var(--mint-glow);
 }
 
-/* Connector line */
 .timeline-item::after {
   height: 4px;
-  background: #ffd1dc;
+  background: linear-gradient(90deg, var(--mint), var(--pink));
 }
 
-/* Left side */
 .timeline-item:nth-child(odd)::before {
-  right: -92.5px; /* circle sits on line */
+  right: -92.5px;
 }
 
 .timeline-item:nth-child(odd)::after {
   right: -70px;
-  width: 70px; /* connector length */
+  width: 70px;
 }
 
-/* Right side */
 .timeline-item:nth-child(even)::before {
   left: -92.5px;
 }
@@ -859,12 +1235,14 @@ color: #fff;
   width: 70px;
 }
 
-/* Box content */
 .timeline-content {
-  background: #fff0fa;
+  background: rgba(10, 20, 25, 0.6);
   padding: 25px 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border: 1px solid rgba(168, 228, 211, 0.08);
+  position: relative;
+  z-index: 2;
 }
 
 .timeline-img {
@@ -877,20 +1255,26 @@ color: #fff;
   font-family: 'Pacifico', cursive;
   margin-bottom: 10px;
   font-size: 1.6rem;
-  color: #ff5faa;
+  color: var(--pink);
+  text-shadow: 0 0 8px rgba(248, 200, 212, 0.2);
 }
 
 .timeline-content .date {
   font-size: 0.9rem;
-  color: #888;
+  color: var(--mint);
+  text-shadow: 0 0 4px var(--mint-glow);
 }
 
 .timeline-content p {
   font-size: 1rem;
-  color: #ea62ff;
+  color: #b0c4c0;
   font-family: "Poppins", "Segoe UI", sans-serif;
   line-height: 1.6;
 }
+
+/* ============================================
+   MODALS — HOLOGRAPHIC
+   ============================================ */
 
 .image-modal {
   display: none;
@@ -904,14 +1288,16 @@ color: #fff;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  backdrop-filter: blur(6px);
 }
 
 .image-modal img {
   max-width: 90%;
   max-height: 85vh;
   border-radius: 10px;
-  box-shadow: 0 0 25px rgba(255,255,255,0.3);
+  box-shadow: 0 0 30px rgba(168, 228, 211, 0.2), 0 0 60px rgba(248, 200, 212, 0.1);
   object-fit: contain;
+  border: 1px solid rgba(168, 228, 211, 0.2);
 }
 
 .image-modal.active {
@@ -924,14 +1310,15 @@ color: #fff;
   top: 25px;
   right: 35px;
   font-size: 2rem;
-  color: white;
+  color: var(--white);
   cursor: pointer;
   transition: 0.3s;
   z-index: 10000;
+  text-shadow: 0 0 8px var(--mint-glow);
 }
 
 .image-modal::after:hover {
-  color: #ff7eb3;
+  color: var(--mint);
 }
 
 .tiktok-video {
@@ -941,12 +1328,14 @@ color: #fff;
   overflow: hidden;
   margin-top: 15px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   transition: transform 0.2s ease;
+  border: 1px solid rgba(168, 228, 211, 0.1);
 }
 
 .tiktok-video:hover {
   transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3), 0 0 15px var(--mint-glow);
 }
 
 .tiktok-video img {
@@ -960,8 +1349,8 @@ color: #fff;
   content: "▶";
   position: absolute;
   font-size: 3rem;
-  color: white;
-  text-shadow: 0 0 10px rgba(0,0,0,0.6);
+  color: var(--white);
+  text-shadow: 0 0 10px rgba(0,0,0,0.6), 0 0 20px var(--mint-glow);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -969,7 +1358,7 @@ color: #fff;
 }
 
 .timeline-content a {
-  color: #ff5fb7;
+  color: var(--pink-dark);
   font-weight: 600;
   text-decoration: none;
   position: relative;
@@ -983,7 +1372,7 @@ color: #fff;
   bottom: -2px;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #ffb6d9, #ff6bd6);
+  background: linear-gradient(90deg, var(--mint), var(--pink));
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.3s ease;
@@ -991,7 +1380,7 @@ color: #fff;
 }
 
 .timeline-content a:hover {
-  color: #ff8ed9;
+  color: var(--pink);
 }
 
 .timeline-content a:hover::after {
@@ -1007,10 +1396,11 @@ color: #fff;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* disable scroll inside modal */
-  background-color: rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.8);
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(6px);
 }
 
 .tiktok-modal.active {
@@ -1019,18 +1409,34 @@ color: #fff;
 
 .tiktok-modal-content {
   position: relative;
-  background-color: #fff0fa;
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.95), rgba(20, 40, 45, 0.95));
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 25px rgba(168, 228, 211, 0.1);
   width: 90%;
   max-width: 480px;
   overflow: hidden;
   animation: popIn 0.3s ease;
+  border: 1px solid rgba(168, 228, 211, 0.2);
+  border-top: 3px solid var(--mint);
+  border-bottom: 3px solid var(--pink);
+}
+
+.tiktok-modal-content::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.1), transparent);
+    animation: holoScan 6s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .tiktok-modal-content iframe {
   width: 100%;
-  height: 75vh; /* auto resize for mobile */
+  height: 75vh;
   border-radius: 15px;
   display: block;
 }
@@ -1040,14 +1446,15 @@ color: #fff;
   top: 10px;
   right: 14px;
   font-size: 32px;
-  color: #ff6fb9;
+  color: var(--pink);
   cursor: pointer;
   transition: 0.2s;
-  z-index: 10;
+  z-index: 100;
+  text-shadow: 0 0 8px rgba(248, 200, 212, 0.3);
 }
 
 .tiktok-close:hover {
-  color: #ff94d2;
+  color: var(--mint);
 }
 
 @keyframes popIn {
@@ -1060,13 +1467,19 @@ color: #fff;
   align-items: flex-start;
   gap: 10px;
   margin-top: 10px;
-  background: #fff;
-  border: 1px solid #eee;
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.5), rgba(20, 40, 45, 0.35));
+  border: 1px solid rgba(168, 228, 211, 0.15);
+  border-left: 2px solid var(--mint);
   border-radius: 12px;
   padding: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   transition: 0.3s;
-  overflow: hidden; /* prevent text overflow */
+  overflow: hidden;
+}
+
+.link-preview-box:hover {
+  border-color: rgba(168, 228, 211, 0.3);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15), 0 0 12px var(--mint-glow);
 }
 
 .link-preview-box img {
@@ -1080,10 +1493,10 @@ color: #fff;
 .link-preview-info {
   flex: 1;
   overflow: hidden;
-  max-height: 70px; /* limit text height to image height */
+  max-height: 70px;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* vertically center text */
+  justify-content: center;
 }
 
 .link-preview-info h4,
@@ -1098,15 +1511,15 @@ color: #fff;
 
 .link-preview-info h4 {
   font-size: 0.95rem;
-  color: #ff7eb3;
+  color: var(--pink);
   font-family: "Poppins", sans-serif;
-  -webkit-line-clamp: 1; /* show 1 line only */
+  -webkit-line-clamp: 1;
 }
 
 .link-preview-info p {
   font-size: 0.85rem;
-  color: #444;
-  -webkit-line-clamp: 2; /* show 2 lines max */
+  color: #a0a8b0;
+  -webkit-line-clamp: 2;
 }
 
 body.modal-open {
@@ -1131,9 +1544,9 @@ body.modal-open {
 }
 
 .timeline-item.upcoming .timeline-content {
-  border: 2px dashed #ff7eb3;
-  background: rgba(255, 247, 252, 0.9);
-  box-shadow: 0 0 12px rgba(255, 126, 179, 0.3);
+  border: 2px dashed var(--pink-dark);
+  background: rgba(10, 20, 25, 0.5);
+  box-shadow: 0 0 12px rgba(248, 200, 212, 0.15);
   position: relative;
 }
 
@@ -1142,14 +1555,15 @@ body.modal-open {
   position: absolute;
   top: -12px;
   right: 15px;
-  background: #ff7eb3;
-  color: white;
+  background: linear-gradient(135deg, var(--mint), var(--pink));
+  color: var(--text-dark);
   font-size: 0.75rem;
   font-weight: bold;
   padding: 4px 8px;
   border-radius: 6px;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 6px rgba(255, 126, 179, 0.3);
+  box-shadow: 0 2px 6px rgba(168, 228, 211, 0.3);
+  text-shadow: none;
 }
 
 .timeline-item.upcoming .timeline-content {
@@ -1158,12 +1572,16 @@ body.modal-open {
 
 @keyframes pulseGlow {
   0%, 100% {
-    box-shadow: 0 0 12px rgba(255, 126, 179, 0.3);
+    box-shadow: 0 0 12px rgba(248, 200, 212, 0.15);
   }
   50% {
-    box-shadow: 0 0 20px rgba(255, 126, 179, 0.6);
+    box-shadow: 0 0 20px rgba(248, 200, 212, 0.3);
   }
 }
+
+/* ============================================
+   FANART BOARD — HOLOGRAPHIC
+   ============================================ */
 
 #fanart-board {
   display: flex;
@@ -1181,14 +1599,14 @@ body.modal-open {
   border-radius: 10px;
   width: 220px;
   padding: 18px 12px 10px;
-  box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.3), 0 0 10px rgba(168, 228, 211, 0.05);
   transform-origin: center top;
   animation: dropIn 0.6s ease forwards;
   opacity: 0;
   transition: transform 0.2s ease;
+  border: 1px solid rgba(168, 228, 211, 0.1);
 }
 
-/* --- CSS Thumbtack --- */
 .thumbtack {
   position: absolute;
   top: -10px;
@@ -1196,15 +1614,15 @@ body.modal-open {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--pin-color, #ff6b6b);
+  background: linear-gradient(135deg, var(--mint), var(--pink));
   box-shadow:
     inset -1px -2px 3px rgba(0,0,0,0.2),
     inset 1px 1px 3px rgba(255,255,255,0.6),
-    0 2px 6px rgba(0,0,0,0.3);
+    0 2px 6px rgba(0,0,0,0.3),
+    0 0 6px var(--mint-glow);
   z-index: 3;
 }
 
-/* --- Fanart image gallery --- */
 .fanart-gallery {
   position: relative;
   overflow: hidden;
@@ -1230,13 +1648,12 @@ body.modal-open {
   display: block;
 }
 
-/* Slide buttons */
 .prev, .next {
   position: absolute;
   top: 45%;
   transform: translateY(-50%);
   background: rgba(0,0,0,0.5);
-  color: white;
+  color: var(--white);
   border: none;
   border-radius: 50%;
   width: 28px;
@@ -1244,25 +1661,27 @@ body.modal-open {
   cursor: pointer;
   font-size: 14px;
   line-height: 28px;
+  transition: background 0.2s, box-shadow 0.2s;
 }
 
 .prev:hover, .next:hover {
-  background: rgba(0,0,0,0.7);
+  background: rgba(168, 228, 211, 0.4);
+  color: var(--text-dark);
+  box-shadow: 0 0 8px var(--mint-glow);
 }
 
 .prev { left: 8px; }
 .next { right: 8px; }
 
-/* --- Author link --- */
 .fanart-author {
   text-decoration: none;
-  color: #ff7eb3;
+  color: var(--pink-dark);
   font-weight: 600;
   transition: color 0.3s;
 }
 
 .fanart-author:hover {
-  color: #ff9ecc;
+  color: var(--pink);
 }
 
 @keyframes dropIn {
@@ -1298,33 +1717,56 @@ body.modal-open {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ffb6d9;
+  background: rgba(168, 228, 211, 0.3);
   margin: 0 4px;
   cursor: pointer;
   transition: transform 0.2s, background 0.3s;
 }
 
 .dot.active {
-  background: #ff69b4;
+  background: var(--mint);
   transform: scale(1.2);
+  box-shadow: 0 0 6px var(--mint-glow);
 }
+
+/* ============================================
+   NOTES SECTION — HOLOGRAPHIC
+   ============================================ */
 
 .notes-section {
   text-align: center;
   padding: 40px 20px;
   max-width: 95%;
-  background: linear-gradient(180deg, #fffafc 0%, #fff7f9 100%);
-  border-top: 2px dashed #ffb6c1;
+  background: linear-gradient(180deg, rgba(10, 20, 25, 0.7) 0%, rgba(20, 35, 40, 0.75) 100%);
+  border-top: 2px dashed rgba(168, 228, 211, 0.3);
   border-radius: 0 0 18px 18px;
-  box-shadow: inset 0 4px 12px rgba(255,182,249,0.15);
+  box-shadow: inset 0 4px 12px rgba(168, 228, 211, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.notes-section::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.08), transparent);
+    animation: holoScan 9s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .notes-section h2 {
   font-family: 'Pacifico', cursive;
-  color: #ff7eb3;
+  color: var(--pink);
   margin-bottom: 25px;
   font-size: 1.8rem;
   letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(248, 200, 212, 0.2);
+  position: relative;
+  z-index: 2;
 }
 
 .notes-section form {
@@ -1333,26 +1775,32 @@ body.modal-open {
   gap: 12px;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.7);
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.5), rgba(20, 40, 45, 0.35));
   border-radius: 12px;
   padding: 15px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  border: 1px solid rgba(168, 228, 211, 0.1);
+  position: relative;
+  z-index: 2;
 }
 
 .notes-section input[type="text"],
 .notes-section textarea {
   padding: 10px 12px;
-  border: 1.5px solid #ffd6e7;
+  border: 1.5px solid rgba(168, 228, 211, 0.15);
+  border-bottom: 2px solid var(--pink);
   border-radius: 8px;
   font-family: 'Nunito', sans-serif;
-  background: #fffdfd;
+  background: rgba(10, 20, 25, 0.5);
+  color: var(--white);
   transition: 0.3s;
 }
 
 .notes-section input[type="text"]:focus,
 .notes-section textarea:focus {
-  border-color: #ff9ecd;
-  box-shadow: 0 0 6px rgba(255,150,200,0.3);
+  border-color: var(--mint);
+  border-bottom-color: var(--mint);
+  box-shadow: 0 0 8px var(--mint-glow);
   outline: none;
 }
 
@@ -1387,20 +1835,23 @@ body.modal-open {
 }
 
 .notes-section button {
-  background: linear-gradient(135deg, #ff8ec9, #ff6fb2);
-  color: white;
-  border: none;
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.15), rgba(168, 228, 211, 0.35));
+  color: var(--mint);
+  border: 1px solid rgba(168, 228, 211, 0.25);
   border-radius: 8px;
   padding: 10px 16px;
   cursor: pointer;
   font-weight: 700;
   font-family: 'Poppins', sans-serif;
-  transition: background 0.3s, transform 0.2s;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  text-shadow: 0 0 6px var(--mint-glow);
+  letter-spacing: 0.5px;
 }
 
 .notes-section button:hover {
-  background: linear-gradient(135deg, #ff5fa7, #ff83c6);
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.3), rgba(168, 228, 211, 0.5));
   transform: translateY(-1px);
+  box-shadow: 0 0 12px var(--mint-glow);
 }
 
 /* --- Notes board --- */
@@ -1409,20 +1860,34 @@ body.modal-open {
   height: 1600px;
   background: repeating-linear-gradient(
     45deg,
-    #fffdf9,
-    #fffdf9 50px,
-    #fff7f2 50px,
-    #fff7f2 100px
+    rgba(10, 20, 25, 0.5),
+    rgba(10, 20, 25, 0.5) 50px,
+    rgba(20, 35, 40, 0.5) 50px,
+    rgba(20, 35, 40, 0.5) 100px
   );
   border-radius: 20px;
   margin: 0 auto;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 0 20px rgba(168, 228, 211, 0.05);
   overflow: hidden;
+  border: 1px solid rgba(168, 228, 211, 0.08);
+}
+
+.notes-board::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.08), transparent);
+    animation: holoScan 10s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .notes-wrapper {
   width: 100%;
-  overflow: auto;          /* scroll if too big */
+  overflow: auto;
   padding: 20px;
 }
 
@@ -1431,27 +1896,23 @@ body.modal-open {
   cursor: grab;
   transition: transform 0.1s ease;
   padding: 20px;
-  
-  /* --- NEW CODE STARTS HERE --- */
-  width: 220px;              /* Sets a standard width for all notes */
-  overflow-wrap: break-word; /* Forces long words to break */
-  word-wrap: break-word;     /* Legacy support */
-  /* --- NEW CODE ENDS HERE --- */
+
+  width: 220px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .note p {
-  /* Change color from #000 to inherit so JS can control it */
-  color: inherit; 
+  color: inherit;
   margin: 0;
 }
 
-/* Ensure the author name also adapts */
 .note small {
   display: block;
   text-align: right;
   margin-top: 10px;
-  color: inherit;      /* Changed from #555 */
-  opacity: 0.8;        /* Makes it slightly dimmer than main text */
+  color: inherit;
+  opacity: 0.8;
   font-size: 0.8rem;
 }
 
@@ -1465,7 +1926,6 @@ body.modal-open {
   z-index: 3;
 }
 
-/* Add fake pin at top */
 .note::before {
   content: "";
   position: absolute;
@@ -1474,10 +1934,14 @@ body.modal-open {
   transform: translateX(-50%);
   width: 14px;
   height: 14px;
-  background: #ff7eb3;
+  background: linear-gradient(135deg, var(--mint), var(--pink));
   border-radius: 50%;
-  box-shadow: inset -2px -2px 3px rgba(0,0,0,0.25);
+  box-shadow: inset -2px -2px 3px rgba(0,0,0,0.25), 0 0 8px var(--mint-glow);
 }
+
+/* ============================================
+   COMMUNITY TABS — HOLOGRAPHIC
+   ============================================ */
 
 .community-tabs {
   width: 100%;
@@ -1493,29 +1957,35 @@ body.modal-open {
 }
 
 .tab-btn {
-  background: #ffe6f2;
-  border: none;
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.5), rgba(20, 40, 45, 0.35));
+  border: 1px solid rgba(168, 228, 211, 0.15);
   border-radius: 25px;
   padding: 10px 20px;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  color: #444;
+  color: #b0c4c0;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
 .tab-btn:hover {
-  background: #ffd1e8;
+  background: linear-gradient(135deg, rgba(168, 228, 211, 0.1), rgba(20, 40, 45, 0.4));
+  color: var(--white);
+  border-color: rgba(168, 228, 211, 0.3);
+  box-shadow: 0 3px 12px rgba(168, 228, 211, 0.1);
 }
 
 .tab-btn.active {
-  background: #ff7eb3;
-  color: white;
-  box-shadow: 0 5px 12px rgba(255, 126, 179, 0.3);
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.2), rgba(168, 228, 211, 0.4));
+  color: var(--mint);
+  border-color: rgba(168, 228, 211, 0.4);
+  box-shadow: 0 0 15px var(--mint-glow);
+  text-shadow: 0 0 6px var(--mint-glow);
 }
 
-/* --- Tab content toggle --- */
 .tab-content {
   display: none;
   animation: fadeIn 0.4s ease forwards;
@@ -1530,19 +2000,41 @@ body.modal-open {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ============================================
+   GAME SECTION — HOLOGRAPHIC
+   ============================================ */
+
 #game-section {
   text-align: center;
   padding: 40px 20px;
-  background: linear-gradient(180deg, #fff5f8 0%, #ffe3f0 100%);
-  border-top: 2px dashed #ffb6c1;
+  background: linear-gradient(180deg, rgba(10, 20, 25, 0.7) 0%, rgba(20, 35, 40, 0.75) 100%);
+  border-top: 2px dashed rgba(168, 228, 211, 0.3);
   border-radius: 0 0 18px 18px;
-  box-shadow: inset 0 4px 12px rgba(255,182,249,0.15);
+  box-shadow: inset 0 4px 12px rgba(168, 228, 211, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+#game-section::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.08), transparent);
+    animation: holoScan 8s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 #game-section h2 {
   font-family: 'Pacifico', cursive;
-  color: #ff7eb3;
+  color: var(--pink);
   margin-bottom: 15px;
+  text-shadow: 0 0 10px rgba(248, 200, 212, 0.2);
+  position: relative;
+  z-index: 2;
 }
 
 #game-area {
@@ -1551,11 +2043,27 @@ body.modal-open {
   max-width: 420px;
   height: 550px;
   margin: 0 auto;
-  background: linear-gradient(to top, #ffe9f3, #fffdfd);
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.6), rgba(20, 40, 45, 0.45));
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 0 15px rgba(168, 228, 211, 0.06);
   touch-action: none;
+  border: 1px solid rgba(168, 228, 211, 0.12);
+  border-top: 2px solid var(--mint);
+  border-bottom: 2px solid var(--pink);
+}
+
+#game-area::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.1), transparent);
+    animation: holoScan 4s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 #player {
@@ -1583,30 +2091,37 @@ body.modal-open {
 
 .scoreboard {
   font-family: 'Poppins', sans-serif;
-  color: #ff77a9;
+  color: var(--pink);
   font-size: 1.3rem;
   margin-top: 12px;
+  text-shadow: 0 0 8px rgba(248, 200, 212, 0.2);
+  position: relative;
+  z-index: 2;
 }
 
 #start-btn {
   margin-top: 15px;
-  background: linear-gradient(135deg, #ff8ec9, #ff6fb2);
-  color: white;
-  border: none;
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.15), rgba(168, 228, 211, 0.35));
+  color: var(--mint);
+  border: 1px solid rgba(168, 228, 211, 0.25);
   border-radius: 8px;
   padding: 10px 18px;
   cursor: pointer;
   font-weight: bold;
   font-family: 'Poppins', sans-serif;
-  transition: background 0.3s, transform 0.2s;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  text-shadow: 0 0 6px var(--mint-glow);
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 2;
 }
 
 #start-btn:hover {
-  background: linear-gradient(135deg, #ff5fa7, #ff83c6);
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.3), rgba(168, 228, 211, 0.5));
   transform: translateY(-1px);
+  box-shadow: 0 0 12px var(--mint-glow);
 }
 
-/* Game item styles */
 .falling-item {
   position: absolute;
   top: 0;
@@ -1626,9 +2141,12 @@ body.modal-open {
 .lives-display {
   font-size: 1.4rem;
   margin-top: 10px;
-  color: #ff80b3;
+  color: var(--pink);
   text-align: center;
   font-family: 'Nunito', sans-serif;
+  text-shadow: 0 0 6px rgba(248, 200, 212, 0.2);
+  position: relative;
+  z-index: 2;
 }
 
 .combo-text {
@@ -1640,6 +2158,7 @@ body.modal-open {
   color: #ffb347;
   text-shadow: 0 0 8px rgba(255,200,0,0.8);
   animation: pop 0.5s ease-out;
+  z-index: 5;
 }
 
 @keyframes pop {
@@ -1653,13 +2172,14 @@ body.modal-open {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(20, 20, 30, 0.85);
+  background: rgba(10, 15, 20, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  color: white;
-  z-index: 10;
+  color: var(--white);
+  z-index: 20;
+  backdrop-filter: blur(6px);
 }
 
 .game-over-content {
@@ -1672,18 +2192,21 @@ body.modal-open {
 }
 
 #retry-btn {
-  background: #ff7eb3;
-  color: white;
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.2), rgba(168, 228, 211, 0.4));
+  color: var(--mint);
   padding: 10px 18px;
-  border: none;
+  border: 1px solid rgba(168, 228, 211, 0.25);
   border-radius: 10px;
   font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
   transition: 0.2s;
+  text-shadow: 0 0 6px var(--mint-glow);
 }
 
 #retry-btn:hover {
-  background: #ff4b91;
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.35), rgba(168, 228, 211, 0.55));
+  box-shadow: 0 0 12px var(--mint-glow);
 }
 
 .lives-display {
@@ -1693,23 +2216,48 @@ body.modal-open {
   font-size: 1.8rem;
   pointer-events: none;
   user-select: none;
-  text-shadow: 0 0 4px rgba(0,0,0,0.2);
+  text-shadow: 0 0 4px rgba(0,0,0,0.3);
 }
+
+/* ============================================
+   REVIEW SECTION — HOLOGRAPHIC
+   ============================================ */
 
 .review-section {
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.6), rgba(20, 40, 45, 0.45));
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 20px rgba(168, 228, 211, 0.06);
+  border: 1px solid rgba(168, 228, 211, 0.12);
+  border-top: 2px solid var(--mint);
+  border-bottom: 2px solid var(--pink);
+  position: relative;
+  overflow: hidden;
+}
+
+.review-section::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.08), transparent);
+    animation: holoScan 7s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .review-section h2 {
-  color: #ff69b4;
+  color: var(--pink);
   margin-bottom: 1.5rem;
   text-align: center;
   font-family: 'Pacifico', cursive;
+  text-shadow: 0 0 10px rgba(248, 200, 212, 0.2);
+  position: relative;
+  z-index: 2;
 }
 
 .review-form {
@@ -1718,56 +2266,60 @@ body.modal-open {
   gap: 1.8rem !important;
   width: 100%;
   max-width: 650px;
-  margin: 0 auto; /* center the form */
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
-/* Input, select, textarea style */
 .review-form input,
 .review-form select,
 .review-form textarea {
   width: 100%;
   padding: 1rem;
-  border: 2px solid #ffd4e5;
+  border: 1px solid rgba(168, 228, 211, 0.15);
+  border-bottom: 2px solid var(--pink);
   border-radius: 14px;
   font-size: 1.05rem;
   font-family: 'Nunito', sans-serif;
   transition: border-color 0.3s, box-shadow 0.3s;
-  background: white;
+  background: rgba(10, 20, 25, 0.5);
+  color: var(--white);
 }
 
-/* Pink glow on focus */
 .review-form input:focus,
 .review-form select:focus,
 .review-form textarea:focus {
   outline: none;
-  border-color: #ff69b4;
-  box-shadow: 0 0 8px rgba(255, 105, 180, 0.3);
+  border-color: var(--mint);
+  border-bottom-color: var(--mint);
+  box-shadow: 0 0 10px var(--mint-glow), inset 0 0 5px rgba(168, 228, 211, 0.05);
 }
 
-/* Textarea bigger */
 .review-form textarea {
   min-height: 120px;
   resize: vertical;
 }
 
-/* Submit button style */
 .review-form button {
   padding: 1.1rem;
-  font-style: "Poppins", "Segoe UI", sans-serif;
-  background: linear-gradient(135deg, #ff69b4, #ff1493);
-  color: white;
-  border: none;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.15), rgba(168, 228, 211, 0.35));
+  color: var(--mint);
+  border: 1px solid rgba(168, 228, 211, 0.25);
   border-radius: 14px;
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 0.5rem;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+  text-shadow: 0 0 6px var(--mint-glow);
+  letter-spacing: 0.5px;
 }
 
 .review-form button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 20, 147, 0.35);
+  box-shadow: 0 0 15px var(--mint-glow);
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.3), rgba(168, 228, 211, 0.5));
 }
 
 .review-form button:disabled {
@@ -1776,23 +2328,26 @@ body.modal-open {
 }
 
 .success-message {
-  background: #d4ffd4;
-  color: #2d5a2d;
+  background: rgba(168, 228, 211, 0.15);
+  color: var(--mint);
   padding: 1rem;
   border-radius: 10px;
   text-align: center;
   margin-top: 1rem;
   display: none;
+  border: 1px solid rgba(168, 228, 211, 0.25);
+  text-shadow: 0 0 4px var(--mint-glow);
 }
 
 .error-message {
-  background: #ffd4d4;
-  color: #5a2d2d;
+  background: rgba(248, 200, 212, 0.1);
+  color: var(--pink);
   padding: 1rem;
   border-radius: 10px;
   text-align: center;
   margin-top: 1rem;
   display: none;
+  border: 1px solid rgba(248, 200, 212, 0.2);
 }
 
 .review-promo {
@@ -1828,23 +2383,25 @@ body.modal-open {
   align-items: center;
   gap: 8px;
   padding: 12px 18px;
-  background: linear-gradient(135deg, #ff8ec9, #ff6fb2);
-  color: white;
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.2), rgba(168, 228, 211, 0.4));
+  color: var(--mint);
   text-decoration: none;
   border-radius: 25px;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 0.95rem;
-  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+  box-shadow: 0 4px 15px rgba(168, 228, 211, 0.15);
   transition: all 0.3s ease;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(168, 228, 211, 0.25);
   backdrop-filter: blur(10px);
+  text-shadow: 0 0 6px var(--mint-glow);
+  letter-spacing: 0.5px;
 }
 
 .review-promo-btn:hover {
-  background: linear-gradient(135deg, #ff5fa7, #ff83c6);
+  background: linear-gradient(90deg, rgba(168, 228, 211, 0.35), rgba(168, 228, 211, 0.55));
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 25px rgba(255, 105, 180, 0.6);
+  box-shadow: 0 6px 25px rgba(168, 228, 211, 0.3);
 }
 
 .review-promo-btn:active {
@@ -1865,21 +2422,45 @@ body.modal-open {
   }
 }
 
-/* Pending Submissions List Styles */
+/* ============================================
+   PENDING SUBMISSIONS — HOLOGRAPHIC
+   ============================================ */
+
 .pending-submissions {
   margin-top: 40px;
   padding: 25px;
-  background: linear-gradient(135deg, #fff7f0 0%, #ffe6f2 100%);
+  background: linear-gradient(135deg, rgba(10, 20, 25, 0.55), rgba(20, 40, 45, 0.4));
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 0 15px rgba(168, 228, 211, 0.04);
+  border: 1px solid rgba(168, 228, 211, 0.1);
+  border-top: 2px solid var(--mint);
+  border-bottom: 2px solid var(--pink);
+  position: relative;
+  overflow: hidden;
+}
+
+.pending-submissions::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    background: linear-gradient(to bottom, transparent, rgba(168, 228, 211, 0.06), transparent);
+    animation: holoScan 9s linear infinite;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .pending-submissions h3 {
   margin: 0 0 20px 0;
-  color: #ff69b4;
+  color: var(--pink);
   font-size: 1.3em;
   font-weight: 700;
   text-align: center;
+  text-shadow: 0 0 8px rgba(248, 200, 212, 0.15);
+  position: relative;
+  z-index: 2;
 }
 
 .pending-list {
@@ -1889,6 +2470,8 @@ body.modal-open {
   max-height: 400px;
   overflow-y: auto;
   padding: 10px;
+  position: relative;
+  z-index: 2;
 }
 
 .pending-list::-webkit-scrollbar {
@@ -1896,31 +2479,31 @@ body.modal-open {
 }
 
 .pending-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(10, 20, 25, 0.5);
   border-radius: 10px;
 }
 
 .pending-list::-webkit-scrollbar-thumb {
-  background: #ffb3d9;
+  background: rgba(168, 228, 211, 0.3);
   border-radius: 10px;
 }
 
 .pending-list::-webkit-scrollbar-thumb:hover {
-  background: #ff69b4;
+  background: var(--mint);
 }
 
 .submission-item {
-  background: white;
+  background: rgba(10, 20, 25, 0.6);
   padding: 15px;
   border-radius: 12px;
-  border-left: 4px solid #ff69b4;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid var(--mint);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .submission-item:hover {
   transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.15);
+  box-shadow: 0 4px 12px rgba(168, 228, 211, 0.08);
 }
 
 .submission-header {
@@ -1932,13 +2515,13 @@ body.modal-open {
 
 .submission-tiktok {
   font-weight: 700;
-  color: #ff1493;
+  color: var(--pink);
   font-size: 1.05em;
 }
 
 .submission-date {
   font-size: 0.85em;
-  color: #999;
+  color: #888;
   font-style: italic;
 }
 
@@ -1952,43 +2535,46 @@ body.modal-open {
 .submission-character,
 .submission-uid {
   font-size: 0.95em;
-  color: #666;
+  color: #b0c4c0;
 }
 
 .submission-character {
   font-weight: 600;
-  color: #ff69b4;
+  color: var(--pink);
 }
 
 .submission-notes {
   margin-top: 10px;
   padding: 10px;
-  background: #fff7f0;
+  background: rgba(10, 20, 25, 0.5);
   border-radius: 8px;
   font-size: 0.9em;
-  color: #555;
+  color: #a0a8b0;
   font-style: italic;
   border-left: 3px solid #ffd700;
 }
 
 .no-submissions {
   text-align: center;
-  color: #999;
+  color: #888;
   padding: 30px;
   font-style: italic;
 }
 
 .pending-list .request-card {
-  margin-bottom: 18px;        /* space between cards */
+  margin-bottom: 18px;
   padding: 15px;
   border-radius: 10px;
-  background: #ffffff;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  background: rgba(10, 20, 25, 0.6);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
   transition: transform 0.15s ease;
+  border: 1px solid rgba(168, 228, 211, 0.08);
+  border-left: 3px solid var(--mint);
 }
 
 .pending-list .request-card:hover {
   transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.25), 0 0 10px var(--mint-glow);
 }
 
 .request-header {
@@ -2000,6 +2586,7 @@ body.modal-open {
 .request-user {
   font-size: 1.15rem;
   font-weight: 600;
+  color: var(--white);
 }
 
 .status-badge.pending {
@@ -2011,10 +2598,13 @@ body.modal-open {
 }
 
 .playlist-table th, td{
-  color: black
+  color: var(--white);
 }
 
-/* --- Mail Animation Container --- */
+/* ============================================
+   MAIL ANIMATION
+   ============================================ */
+
 .mail-anim-container {
   position: fixed;
   top: 50%;
@@ -2037,7 +2627,6 @@ body.modal-open {
   perspective: 1000px;
 }
 
-/* THE MASK: Cuts off the paper at the bottom */
 .envelope-body {
   position: absolute;
   top: 0;
@@ -2045,38 +2634,35 @@ body.modal-open {
   width: 100%;
   height: 100%;
   border-radius: 0 0 10px 10px;
-  overflow: hidden; /* <--- Fixes the clipping issue */
+  overflow: hidden;
   z-index: 1;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
-/* Back Wall */
 .envelope .back {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #bd5678; /* Darkest Pink */
+  background: #4a7a6b;
 }
 
-/* The Letter */
 .envelope .letter {
   position: absolute;
   bottom: 0;
   left: 20px;
   width: 200px;
-  height: 140px; /* Slightly taller to peek out well */
-  background: white;
+  height: 140px;
+  background: var(--white);
   border-radius: 5px;
   z-index: 2;
   display: flex;
   flex-direction: column;
   padding: 20px;
   gap: 10px;
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-  
-  /* Start Position: High above */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.15);
+
   transform: translateY(-250px);
   opacity: 0;
   transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
@@ -2084,61 +2670,54 @@ body.modal-open {
 
 .letter-lines {
   height: 8px;
-  background: #eee;
+  background: #3a3f45;
   border-radius: 4px;
   width: 100%;
 }
 .letter-lines.short { width: 50%; }
 
-/* Front Sides (The "V" cut) */
 .envelope .front-sides {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #d46a96; /* Medium Pink */
+  background: #5a8f7e;
   z-index: 3;
-  /* Cut a V shape that ends exactly in the center (50% 50%) */
   clip-path: polygon(0 0, 0% 100%, 100% 100%, 100% 0, 50% 50%);
 }
 
-/* Front Bottom (The Triangle) */
 .envelope .front-bottom {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #ff9cbd; /* Brightest Pink */
+  background: var(--pink-dark);
   z-index: 4;
-  /* Triangle that touches the center (50% 50%) */
   clip-path: polygon(0 100%, 50% 50%, 100% 100%);
 }
 
-/* The Top Flap */
 .envelope .flap {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #ffb6d9; /* Lighter Pink */
+  background: #8dd4be;
   border-radius: 10px 10px 0 0;
   z-index: 5;
-  
-  /* Triangle pointing down to center (50% 50%) */
+
   clip-path: polygon(0 0, 100% 0, 50% 50%);
-  
+
   transform-origin: top;
-  transform: rotateX(180deg); /* Start Open */
+  transform: rotateX(180deg);
   transition: transform 0.6s ease-in-out;
 }
 
-/* The Heart Seal */
 .envelope .heart {
   position: absolute;
-  top: 50%; 
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
   font-size: 3rem;
@@ -2147,21 +2726,16 @@ body.modal-open {
   opacity: 0;
 }
 
-/* --- ANIMATION STATES --- */
-
-/* 1. Insert Letter */
 .mail-anim-container.inserting .letter {
-  transform: translateY(0px); /* Slides to bottom */
+  transform: translateY(0px);
   opacity: 1;
 }
 
-/* 2. Close Flap */
 .mail-anim-container.closed .flap {
   transform: rotateX(0deg);
-  background: #ff9cbd; /* Match front-bottom color when closed */
+  background: var(--pink-dark);
 }
 
-/* 3. Stamp Heart */
 .mail-anim-container.sealed .heart {
   animation: stampIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
@@ -2189,12 +2763,16 @@ body.modal-open {
   pointer-events: none;
 }
 
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
 @media (max-width: 768px) {
     header img { max-width: 80%; height: auto; }
     .nav-badge {
-        flex-direction: column; 
+        flex-direction: column;
         gap: 4px;
-        font-size: 0.5rem; 
+        font-size: 0.5rem;
     }
 
     .nav-badge img {
@@ -2202,7 +2780,7 @@ body.modal-open {
         height: 22px;
     }
     .parallax-bg {
-    background: url("luli1crop.JPG") no-repeat center center;
+    background: url("images/luli1crop.jpg") no-repeat center center;
     background-size: cover;
     }
 
@@ -2211,11 +2789,20 @@ body.modal-open {
     }
 
     .about-section.left .about-img {
-      background-image: url("lulicrop.jpg");
+      background-image: url("images/lulicrop.jpg");
     }
 
     .about-section.right .about-img {
-      background-image: url("lulek1crop.jpg");
+      background-image: url("images/lulek1crop.jpg");
+    }
+
+    .about-img {
+      width: 100%; /* Makes the image fill the mobile screen width */
+    }
+
+    .abt-text {
+      max-width: 90%; /* Expands the glass box width */
+      padding: 25px 20px; /* Shrinks the padding so text has room to breathe */
     }
 
     .about-text {
@@ -2252,10 +2839,11 @@ body.modal-open {
         top: 60px;
         right: 20px;
         flex-direction: column;
-        background: rgba(255,255,255,0.95);
+        background: linear-gradient(135deg, rgba(10, 20, 25, 0.95), rgba(20, 40, 45, 0.95));
+        border: 1px solid rgba(168, 228, 211, 0.15);
         padding: 15px;
         border-radius: 12px;
-        display: none; /* hidden by default */
+        display: none;
     }
 
     .nav-links.show {
@@ -2270,7 +2858,6 @@ body.modal-open {
       max-width: 95%;
     }
 
-    /* Line moves to the left edge */
     .timeline::after {
       left: 25px;
     }
@@ -2285,16 +2872,15 @@ body.modal-open {
       transform: translateY(0);
     }
 
-    /* Adjust circle position */
     .timeline-item::before {
       left: -34px !important;
       width: 16px;
       height: 16px;
-      box-shadow: 0 0 0 3px #ffd1dc;
+      box-shadow: 0 0 0 3px rgba(168, 228, 211, 0.3);
     }
 
     .timeline-item::after {
-      display: none; /* hide connector line on mobile */
+      display: none;
     }
 
     .timeline-content {
@@ -2325,7 +2911,7 @@ body.modal-open {
       max-width: 100%;
       margin: 0;
       padding: 8px 6px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
 
     .post-it p {
@@ -2368,7 +2954,6 @@ body.modal-open {
       padding: 10px;
     }
 
-    /* Instead of a huge 2400x1600 board, use responsive grid */
     .notes-board {
       position: relative;
       display: grid;
@@ -2379,17 +2964,17 @@ body.modal-open {
       padding: 10px;
       background: repeating-linear-gradient(
         45deg,
-        #fffdf9,
-        #fffdf9 25px,
-        #fff7f2 25px,
-        #fff7f2 50px
+        rgba(10, 20, 25, 0.4),
+        rgba(10, 20, 25, 0.4) 25px,
+        rgba(20, 35, 40, 0.4) 25px,
+        rgba(20, 35, 40, 0.4) 50px
       );
       border-radius: 12px;
       box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
     }
 
     .note {
-      position: relative !important;  /* disable absolute positioning */
+      position: relative !important;
       left: 0 !important;
       top: 0 !important;
       width: 90%;
@@ -2502,7 +3087,7 @@ body.modal-open {
       max-width: 100%;
       margin: 0;
       padding: 8px 6px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
     .notes-section {
       margin-left: 10px;
