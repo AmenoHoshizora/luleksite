@@ -3098,6 +3098,14 @@ body.modal-open {
     .about p{
     font-size: 0.85rem;
     }
+    .about-text {
+    text-align: center;
+    font-size: 0.1rem;
+    }
+    .about-text p{
+    text-align: center;
+    font-size: 0.8rem;
+    }
     section {
     margin-left: 40px;
     margin-right: 40px;
