@@ -2884,6 +2884,13 @@ body.modal-open {
     .discord-members { width: 100%; height: 100%; transform: translateY(100%); }
     .discord-sidebar.show .discord-members { transform: translateY(0); }
 
+    #vtuber-popup {
+      width: 320px; /* Scales the model down to fit phone screens */
+      right: 0; 
+      left: 0; 
+      margin: 0 auto; /* Centers the popup perfectly at the bottom */
+    }
+
     .nav-links {
         position: absolute;
         top: 60px;
@@ -3109,6 +3116,12 @@ body.modal-open {
     section {
     margin-left: 40px;
     margin-right: 40px;
+    }
+    #vtuber-popup {
+      width: 320px; /* Scales the model down to fit phone screens */
+      right: 0; 
+      left: 0; 
+      margin: 0 auto; /* Centers the popup perfectly at the bottom */
     }
     .link-buttons {
     display: grid;

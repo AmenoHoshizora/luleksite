@@ -148,15 +148,20 @@
   function triggerVtuberPopup() {
     if (!vtuberPopup) return;
     
-    // Show the popup and trigger the CSS slide-up animation
     vtuberPopup.classList.remove("hidden");
     setTimeout(() => {
         vtuberPopup.classList.add("active");
     }, 50);
 
-    // Turn on mouse tracking only once
     if (!trackingActive) {
       document.addEventListener("mousemove", trackEyes);
+      
+      // NEW: Adds touch support for mobile screens
+      document.addEventListener("touchmove", (e) => {
+          // Touch events store coordinates slightly differently than a mouse
+          trackEyes(e.touches[0]); 
+      });
+      
       trackingActive = true;
     }
   }
