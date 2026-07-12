@@ -141,6 +141,55 @@ body {
 }
 
 /* ============================================
+   VTUBER EYE-TRACKING EASTER EGG
+   ============================================ */
+#vtuber-popup {
+  position: fixed;
+  bottom: -600px; 
+  /* Increased from 20px to move her further to the left */
+  right: 600px; 
+  /* Increased from 350px to make her bigger */
+  width: 670px; 
+  z-index: 10000;
+  /* Changed the last number from 1.275 to 1.1 to soften the bounce */
+  transition: bottom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  pointer-events: none; 
+}
+
+#vtuber-popup.active {
+  bottom: -20px; /* Slides up onto the screen */
+}
+
+.hidden {
+  display: none !important;
+}
+
+.vtuber-head {
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 3; /* Head sits on the very top */
+}
+
+.eye-part {
+  position: absolute;
+}
+
+/* SCLERAS: Bottom Layer (z-index 1) */
+.l-sclera { z-index: 1; width: 22%; top: 60%; left: 34%; }
+.r-sclera { z-index: 1; width: 22%; top: 60%; right: 34%; }
+
+/* PUPILS: Middle Layer (z-index 2) */
+.pupil {
+  z-index: 2; 
+  width: 11%;
+  transition: transform 0.05s linear; /* Makes the tracking feel snappy */
+}
+
+.l-pupil { top: 67%; left: 35.5%; }
+.r-pupil { top: 67%; right: 36%; }
+
+/* ============================================
    HOLOGRAPHIC PANEL MIXIN CLASSES
    ============================================ */
 

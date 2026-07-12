@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700&family=Poppins:wght@500&display=swap" rel="stylesheet">
   <title>LuliyyKitty's Hub</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="favicon.png">
@@ -110,6 +110,19 @@
     </section>
   </div>
 
+  <div id="vtuber-popup" class="hidden">
+    <!-- Bottom Layer: Scleras -->
+    <img src="images/RSclera.png" class="eye-part l-sclera" alt="Left Sclera">
+    <img src="images/LSclera.png" class="eye-part r-sclera" alt="Right Sclera">
+    
+    <!-- Middle Layer: Moving Pupils -->
+    <img src="images/REye.png" class="eye-part pupil l-pupil" alt="Left Eye">
+    <img src="images/LEye.png" class="eye-part pupil r-pupil" alt="Right Eye">
+    
+    <!-- Top Layer: Head with transparent sockets -->
+    <img src="images/LuliyyHead.png" class="vtuber-head" alt="Luliyy Head">
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   const SUPABASE_URL = "https://hawxtrgfskqoyveyathl.supabase.co"; 
@@ -120,19 +133,48 @@
   let reviewOpen = true;
   let clickCount = 0;
   const headerImg = document.getElementById("header-img");
+  const vtuberPopup = document.getElementById("vtuber-popup");
+  let trackingActive = false;
 
   headerImg.addEventListener("click", () => {
     clickCount++;
-    if (clickCount === 8) {
-      startLoveRain();
+    if (clickCount === 7) {
+      triggerVtuberPopup();
       clickCount = 0;
     }
   });
 
-  function startLoveRain() {
-    for (let i = 0; i < 60; i++) {
-      setTimeout(() => createLove(), i * 100);
+  function triggerVtuberPopup() {
+    if (!vtuberPopup) return;
+    
+    // Show the popup and trigger the CSS slide-up animation
+    vtuberPopup.classList.remove("hidden");
+    setTimeout(() => {
+        vtuberPopup.classList.add("active");
+    }, 50);
+
+    // Turn on mouse tracking only once
+    if (!trackingActive) {
+      document.addEventListener("mousemove", trackEyes);
+      trackingActive = true;
     }
+  }
+
+  function trackEyes(e) {
+    const pupils = document.querySelectorAll(".pupil");
+    
+    // Calculate mouse position as a percentage of the screen
+    const mouseX = e.clientX / window.innerWidth;
+    const mouseY = e.clientY / window.innerHeight;
+
+    // The multiplier (15) controls the "leash" on the eyes. 
+    // Keep it small so the pupils don't float outside the eye sockets!
+    const moveX = (mouseX - 0.5) * 15; 
+    const moveY = (mouseY - 0.5) * 15;
+
+    pupils.forEach(pupil => {
+      pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
   }
 
   async function checkReviewStatus() {
@@ -174,60 +216,6 @@
         }
     )
     .subscribe();
-
-
-  function createLove() {
-    const love = document.createElement("div");
-    love.classList.add("love");
-    love.textContent = "💌";
-
-    let x = Math.random() * window.innerWidth;
-    let y = -50;
-    let vx = (Math.random() - 0.5) * 1.5;
-    let vy = 2 + Math.random() * 2;     
-    let angle = Math.random() * 360;
-    let flutterSpeed = 0.5 + Math.random() * 0.5;
-
-    document.body.appendChild(love);
-
-    let landed = false;
-    let landedTimer = null;
-
-    function animate() {
-      if (!landed) {
-        x += vx;
-        y += vy;
-        angle += Math.sin(y / 25) * flutterSpeed;
-
-        if (vy < 2) vy += 0.1;
-
-        love.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
-
-        if (y >= window.innerHeight - 40) {
-          y = window.innerHeight - 40;
-          landed = true;
-
-          landedTimer = setTimeout(() => {
-            love.style.transition = "opacity 1s";
-            love.style.opacity = "0";
-            setTimeout(() => love.remove(), 1000);
-          }, 4000);
-        }
-      }
-
-      if (!landed) requestAnimationFrame(animate);
-    }
-    animate();
-
-    love.addEventListener("mouseenter", () => bounceAway());
-    love.addEventListener("touchstart", () => bounceAway());
-
-    function bounceAway() {
-      if (!landed) {
-        vy = -5; 
-      }
-    }
-  }
 
     async function loadOnlineMembers() {
       try {
