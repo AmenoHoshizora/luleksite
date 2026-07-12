@@ -309,7 +309,7 @@ header img:hover {
 .about-text {
     max-width: 500px;
     top: 50%;
-    text-align: right; /* Keeps your original alignment */
+    text-align: center; /* Keeps your original alignment */
     z-index: 1;
     
     /* Frosted Glass Properties */
@@ -358,8 +358,9 @@ header img:hover {
 }
 
 .about-text p {
-    font-size: 1.1rem;
+    font-size: 1.0rem;
     line-height: 1.6;
+    text-align: justify;
     color: var(--white); /* Changed from --black */
 }
 
@@ -2865,7 +2866,7 @@ body.modal-open {
 
     .abt-text p{
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.6rem;
     }
     section { margin: 20px auto; padding: 15px; }
     .link-buttons { gap: 16px; }
