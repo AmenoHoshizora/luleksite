@@ -560,6 +560,10 @@ section * {
     box-shadow: 0 0 20px #FFC401, 0 0 40px #D62DA4, 0 0 60px #4C9BFF;
 }
 
+.donation-buttons .kofi:hover {
+    box-shadow: 0 0 20px #72A5F2, 0 0 40px #FF6433;
+}
+
 .social-container {
     display: flex;
     flex-direction: column;
